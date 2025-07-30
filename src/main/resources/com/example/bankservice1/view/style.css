@@ -1,0 +1,61 @@
+/* 애플리케이션 전역 기본 폰트 및 배경색 설정 */
+.root {
+    -fx-font-family: "Malgun Gothic";
+    -fx-font-size: 14px;
+    -fx-base: #FFFFFF; /* 기본 배경색 */
+}
+
+/* ListView의 각 셀(ListCell)의 기본 스타일 */
+.list-cell {
+    -fx-background-color: #f0f0f0;
+    -fx-background-insets: 0 10 5 10; /* 상, 우, 하, 좌 여백 효과 */
+    -fx-background-radius: 5; /* 모서리를 둥글게 */
+    -fx-padding: 0;
+}
+
+/* 빈 셀은 보이지 않도록 처리 */
+.list-cell:empty {
+    -fx-background-color: transparent;
+}
+
+/* 셀에 마우스를 올렸을 때 */
+.list-cell:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+/* 셀을 선택했을 때 */
+.list-cell:selected {
+    -fx-background-color: #d3d3d3;
+}
+
+/* 커스텀 셀 내부의 HBox 콘텐츠 스타일 */
+.custom-list-cell-content {
+    -fx-padding: 8px 12px;
+}
+
+/* '새글' 버튼과 같은 주요 액션 버튼 스타일 */
+.accent-button {
+    -fx-background-color: #c95454;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 8px 15px;
+}
+
+.accent-button:hover {
+    -fx-background-color: #b04040;
+}
+
+/* '...' 모양의 옵션 버튼 스타일 */
+.options-button {
+    -fx-background-color: transparent;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 8px;
+    -fx-cursor: hand;
+}
+
+.options-button:hover {
+    -fx-background-color: #d0d0d0;
+    -fx-background-radius: 50%;
+}
