@@ -7,16 +7,16 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.loginController">
    <children>
-      <AnchorPane layoutX="83.0" layoutY="109.0" prefHeight="182.0" prefWidth="434.0" style="-fx-background-color: #455e#808080ab;">
+      <AnchorPane layoutX="88.0" layoutY="109.0" prefHeight="182.0" prefWidth="425.0" style="-fx-background-color: #eeeeee;">
          <children>
-            <TextField layoutX="141.0" layoutY="48.0" style="-fx-background-color: #C0C0C0;" text="ID" />
-            <TextField layoutX="141.0" layoutY="91.0" style="-fx-background-color: #C0C0C0;" text="PW" />
-            <Button layoutX="114.0" layoutY="138.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="91.0" style="-fx-background-color: #C0C0C0;" text="로그인">
+            <TextField fx:id="idField" layoutX="141.0" layoutY="48.0" style="-fx-background-color: #FFFFFF;" promptText= "ID" />
+            <TextField fx:id="pwField" layoutX="141.0" layoutY="91.0" style="-fx-background-color: #FFFFFF;" promptText= "PW" />
+            <Button  fx:id="loginButton" onAction="#handleLoginButtonAction" layoutX="114.0" layoutY="138.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="91.0" style="-fx-background-color: #C0C0C0;" text="로그인1">
                <font>
                   <Font name="DotumChe" size="12.0" />
                </font>
             </Button>
-            <Button layoutX="229.0" layoutY="138.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="91.0" style="-fx-background-color: #C0C0C0;" text="회원가입" />
+            <Button fx:id="signUpButton" onAction="#handleSignUpButtonAction" layoutX="229.0" layoutY="138.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="91.0" style="-fx-background-color: #C0C0C0;" text="회원가입" />
          </children></AnchorPane>
    </children>
 </AnchorPane>

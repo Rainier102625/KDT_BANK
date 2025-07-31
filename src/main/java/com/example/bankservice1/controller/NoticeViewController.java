@@ -82,7 +82,6 @@ public class NoticeViewController implements Initializable {
                 }
             }
         });
-
         return pageListView;
     }
 }

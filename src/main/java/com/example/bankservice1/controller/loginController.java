@@ -1,5 +1,163 @@
 package com.example.bankservice1.controller;
 
-public class loginController {
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Platform;
+import javafx.event.*;
+import javafx.fxml.FXML;
+import javafx.fxml.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.stage.*;
 
+import java.net.URI;
+import java.net.http.*;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+import java.io.IOException;
+
+import com.example.bankservice1.model.*;
+
+public class loginController {
+    @FXML
+    private TextField idField;
+
+    @FXML
+    private TextField pwField;
+
+    @FXML
+    private Button loginButton;
+
+    @FXML
+    private Button signUpButton;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final HttpClient httpClient = HttpClient.newHttpClient();
+
+    @FXML
+    protected void handleLoginButtonAction(ActionEvent event) {
+        String userId = idField.getText();
+        String userPw = pwField.getText();
+
+        LoginDTO loginRequest = new LoginDTO(userId, userPw);
+
+        System.out.println("로그인 시도: ID = " + userId + ", PW = " + userPw);
+
+//        if(userId.trim().isEmpty() ){
+//            showAlert("아이디을 입력하세요");
+//
+//        }
+//        if( userPw.trim().isEmpty()){
+//            showAlert("비밀번호를 입력하세요");
+//        }
+//        if (userId.equals("") && userPw.equals("")) {
+//
+//        }
+        // 여기에 로그인 처리 로직을 구현합니다.
+//        try {
+//            // 1. 새로 로드할 FXML 파일의 경로를 지정합니다.
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("com/example/bankservice1/view/NoticeView.fxml"));
+//
+//            // 2. FXML 파일을 로드하여 새로운 화면(Parent 객체)을 생성합니다.
+//            Parent root = loader.load();
+//
+//            // 3. 현재 창(Stage)을 가져옵니다.
+//            //    (이벤트가 발생한 컨트롤로부터 Scene과 Window를 거슬러 올라가 Stage를 찾습니다.)
+//            Stage stage = (Stage) loginButton.getScene().getWindow();
+//
+//            // 4. 새로운 화면으로 Scene을 생성합니다.
+//            Scene scene = new Scene(root);
+//
+//            // 5. 현재 Stage에 새로운 Scene을 설정하여 화면을 전환합니다.
+//            stage.setScene(scene);
+//            stage.setTitle("메인화면"); // 창 제목을 변경할 수도 있습니다.
+//            stage.show();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        try {
+            String requestBody = objectMapper.writeValueAsString(loginRequest);
+            System.out.println(requestBody);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/auth/login1")) // 로그인 API 주소
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            // 비동기로 서버에 요청 전송
+            httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                    .thenAccept(response -> {
+                        Platform.runLater(() -> {
+                            if (response.statusCode() == 200) {
+                                // 로그인 성공 처리 (예: 메인 화면으로 전환)
+                                String responseBody = response.body(); // JWT 토큰 등을 받을 수 있음
+
+                                SessionManager.getInstance().setJwtToken(responseBody);
+                                System.out.println("로그인 성공: " + responseBody);
+                                showAlert(Alert.AlertType.INFORMATION, "성공", "로그인에 성공했습니다.");
+                                // 여기서 화면 전환 로직 호출
+                            }
+                            else if (response.statusCode() == 400) {
+                                System.out.println("로그인 실패");
+                                showAlert(Alert.AlertType.ERROR, "실패", "아이디 또는 비밀번호가 올바르지 않습니다.");
+                            }
+                            else {
+                                // 로그인 실패 처리
+                                System.out.println("로그인 실패");
+                                showAlert(Alert.AlertType.ERROR, "실패", "잘못된 요청");
+                            }
+                        });
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "오류", "로그인 요청 중 오류가 발생했습니다.");
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+//    private void showAlert(String msg) {
+//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//        alert.setTitle("알림");
+//        alert.setHeaderText(null);
+//        alert.setContentText(msg);
+//        alert.showAndWait();
+//    }
+
+    @FXML
+    protected void handleSignUpButtonAction(ActionEvent event) {
+        System.out.println("회원가입 화면으로 이동합니다.");
+        // 여기에 화면 전환 로직을 구현합니다.
+        try {
+            // 1. 새로 로드할 FXML 파일의 경로를 지정합니다.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/Signup.fxml"));
+
+            // 2. FXML 파일을 로드하여 새로운 화면(Parent 객체)을 생성합니다.
+            Parent root = loader.load();
+
+            // 3. 현재 창(Stage)을 가져옵니다.
+            //    (이벤트가 발생한 컨트롤로부터 Scene과 Window를 거슬러 올라가 Stage를 찾습니다.)
+            Stage stage = (Stage) signUpButton.getScene().getWindow();
+
+            // 4. 새로운 화면으로 Scene을 생성합니다.
+            Scene scene = new Scene(root);
+
+            // 5. 현재 Stage에 새로운 Scene을 설정하여 화면을 전환합니다.
+            stage.setScene(scene);
+            stage.setTitle("회원가입"); // 창 제목을 변경할 수도 있습니다.
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
