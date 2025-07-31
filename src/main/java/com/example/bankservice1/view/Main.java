@@ -34,6 +34,18 @@ public class Main extends Application {
     catch (IOException e) {
         e.printStackTrace();
     }
+    public void start(Stage primaryStage) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/Signup.fxml"));
+
+            Scene scene = new Scene(root, 800, 600);
+            primaryStage.setTitle("회원가입");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
