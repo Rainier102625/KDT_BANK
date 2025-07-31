@@ -17,6 +17,7 @@ import java.net.http.HttpResponse;
 import java.io.IOException;
 
 import com.example.bankservice1.model.*;
+import com.example.bankservice1.constants.apiconstants;
 
 public class loginController {
     @FXML
@@ -82,7 +83,7 @@ public class loginController {
             System.out.println(requestBody);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/auth/login1")) // 로그인 API 주소
+                    .uri(URI.create(apiconstants.BASE_URL + "/api/auth/login")) // 로그인 API 주소
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();

@@ -1,5 +1,6 @@
 package com.example.bankservice1.controller;
 
+import com.example.bankservice1.constants.apiconstants;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,14 +24,14 @@ public class SignupController {
     @FXML private TextField rankField;
     private boolean sendSignupData(String id, String pw, String name, String pnum, String birth, String depart, String rank) {
         try {
-            URL url = new URL("http://100.100.101.56:8080/api/auth/register");
+            URL url = new URL(apiconstants.BASE_URL + "/api/auth/register");
             HttpURLConnection conn =(HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 
             String json = String.format(
-                    "{\"id\":\"%s\",\"pw\":\"%s\",\"name\":\"%s\",\"pnum\":\"%s\",\"birth\":\"%s\"depart\":\"%s\",\"rank\":\"%s\"}",
+                    "{\"userId\":\"%s\",\"userPassword\":\"%s\",\"userName\":\"%s\",\"userPhone\":\"%s\",\"userBirth\":\"%s\",\"department\":\"%s\",\"position\":\"%s\"}",
                     id, pw, name, pnum, birth, depart, rank
             );
             try (OutputStream os = conn.getOutputStream()){
