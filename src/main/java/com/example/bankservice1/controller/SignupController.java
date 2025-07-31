@@ -19,23 +19,25 @@ public class SignupController {
     @FXML private TextField pwField;
     @FXML private TextField pnumField;
     @FXML private TextField birthField;
-    private boolean sendSignupData(String id, String pw, String name, String pnum, String birth) {
+    @FXML private TextField departField;
+    @FXML private TextField rankField;
+    private boolean sendSignupData(String id, String pw, String name, String pnum, String birth, String depart, String rank) {
         try {
-            URL url = new URL("http://localhost:8080/api/auth/register");
+            URL url = new URL("http://100.100.101.56:8080/api/auth/register");
             HttpURLConnection conn =(HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 
             String json = String.format(
-                    "{\"id\":\"%s\",\"pw\":\"%s\",\"name\":\"%s\",\"pnum\":\"%s\",\"birth\":\"%s\"}",
-                    id, pw, name, pnum, birth
+                    "{\"id\":\"%s\",\"pw\":\"%s\",\"name\":\"%s\",\"pnum\":\"%s\",\"birth\":\"%s\"depart\":\"%s\",\"rank\":\"%s\"}",
+                    id, pw, name, pnum, birth, depart, rank
             );
             try (OutputStream os = conn.getOutputStream()){
                 os.write(json.getBytes("UTF-8"));
             }
             int responseCode = conn.getResponseCode();
-            return responseCode == 200;
+            return responseCode == 200 | responseCode == 201;
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
@@ -49,6 +51,8 @@ public class SignupController {
         String pw = pwField.getText();
         String pnum = pnumField.getText();
         String birth = birthField.getText();
+        String depart = departField.getText();
+        String rank = rankField.getText();
 
         if(name.trim().isEmpty()) {
             showAlert("이름을 입력하세요");
@@ -70,7 +74,7 @@ public class SignupController {
             showAlert("주민등록번호를 입력하세요");
             return;
         }
-        boolean success = sendSignupData(id, pw, name, pnum, birth);
+        boolean success = sendSignupData(id, pw, name, pnum, birth, depart, rank);
         if(success) {
             showAlert("회원가입 성공");
             moveLogin();
@@ -79,7 +83,10 @@ public class SignupController {
         }
 
     }
-
+    @FXML
+    private void handelsignin(){
+        moveLogin();
+    }
     private void moveLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/Login.fxml"));
