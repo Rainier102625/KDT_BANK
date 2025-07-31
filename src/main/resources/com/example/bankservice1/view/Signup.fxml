@@ -42,7 +42,7 @@
 
                 <VBox spacing="5">
                     <Label style="-fx-font-size: 12px;" text="전화번호" />
-                    <PasswordField fx:id="pnumField" promptText="010-0000-0000" />
+                    <PasswordField fx:id="pnumField" promptText="010-1234-5678" />
 
                     <Label style="-fx-font-size: 12px;" text="주민등록번호" />
                     <PasswordField fx:id="birthField" promptText="19920101" />
