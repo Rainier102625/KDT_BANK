@@ -11,17 +11,18 @@ import java.io.IOException;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
-        // FXML 파일을 로드
-        Parent root = FXMLLoader.load(getClass().getResource("NoticeView.fxml"));
+    public void start(Stage primaryStage) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/Signup.fxml"));
 
-        // Scene 생성
-        Scene scene = new Scene(root, 800, 600);
-
-        // Stage(윈도우) 설정
-        primaryStage.setTitle("공지사항 관리 시스템");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            Scene scene = new Scene(root, 800, 600);
+            primaryStage.setTitle("회원가입");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
