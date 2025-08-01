@@ -2,56 +2,52 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
+<BorderPane prefHeight="600" prefWidth="1000" stylesheets="@style.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.NoticeViewController">
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.bankservice1.controller.NoticeViewController">
     <left>
         <VBox spacing="10.0" style="-fx-background-color: #f8f9fa;" BorderPane.alignment="CENTER">
-            <padding>
-                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-            </padding>
+            <padding><Insets bottom="15" left="15" right="15" top="15" /></padding>
             <children>
-                <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="공지사항(메인)" />
-                <Hyperlink text="• 공지사항" />
-                <Hyperlink text="• 상품 관리" />
-                <Hyperlink text="• 계좌 개설 승인" />
-                <Hyperlink text="• 고객 조회" />
-                <Hyperlink text="• 마이페이지" />
-                <Hyperlink text="• 채팅" />
-                <Label layoutX="25.0" layoutY="25.0" style="-fx-font-weight: bold; -fx-font-size: 16px;" text="관리자 메뉴">
-                    <VBox.margin>
-                        <Insets top="20.0" />
-                    </VBox.margin>
+                <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="메뉴">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin></Label>
+            <Button mnemonicParsing="false" style="-fx-background-color: #f8f9fa;" text="• 공지사항" />
+            <Label text="• 상품 관리" />
+            <Label text="• 계좌 개설 승인" />
+            <Label text="• 고객 조회" />
+            <Label text="• 마이페이지" />
+            <Label text="• 채팅" />
+                <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="관리자 메뉴">
+                    <VBox.margin><Insets top="20" /></VBox.margin>
                 </Label>
-                <Hyperlink text="• 사원 조회" />
+            <Label text="• 사원 조회" />
             </children>
         </VBox>
     </left>
+
     <center>
-        <VBox BorderPane.alignment="CENTER">
+        <VBox spacing="10" BorderPane.alignment="CENTER">
             <children>
                 <TabPane tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                         <Tab text="공지" />
-                        <Tab text="X" />
+                        <Tab text="기타" />
                     </tabs>
                 </TabPane>
-                <Pagination fx:id="pagination" VBox.vgrow="ALWAYS" />
-                <HBox alignment="CENTER_RIGHT" prefHeight="60.0" spacing="10.0">
-                    <padding>
-                        <Insets right="20.0" />
-                    </padding>
-                    <Button mnemonicParsing="false" styleClass="accent-button" text="새글" />
+
+                <VBox fx:id="noticeList" spacing="10" style="-fx-padding: 0 10 0 10;" />
+
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <padding><Insets right="20" /></padding>
                 </HBox>
             </children>
         </VBox>
