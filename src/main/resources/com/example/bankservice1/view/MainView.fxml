@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.bankservice1.controller.MainViewController" fx:id="mainPane">
+    <left>
+        <VBox spacing="10.0" style="-fx-background-color: #f8f9fa;" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+            <children>
+                <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="메뉴" />
+                <Button text="• 공지사항" fx:id="NoticeViewButton" onAction="#showNoticeView"/>
+                <Button text="• 상품 관리" />
+                <Button text="• 계좌 개설 승인" />
+                <Button text="• 고객 조회" />
+                <Button text="• 마이페이지" />
+                <Button text="• 채팅"/>
+<!--                <Button text="• 공지사항" onAction="#showNoticeView"/>-->
+<!--                <Button text="• 상품 관리" onAction="#showProductView"/>-->
+<!--                <Button text="• 계좌 개설 승인" onAction="#showApprovalView"/>-->
+<!--                <Button text="• 고객 조회" onAction="#showSearchForCustomerView"/>-->
+<!--                <Button text="• 마이페이지" onAction="#showMyPageView"/>-->
+<!--                <Button text="• 채팅" onAction="#showChatView"/>-->
+                <Label layoutX="25.0" layoutY="25.0" style="-fx-font-weight: bold; -fx-font-size: 16px;" text="관리자 메뉴">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Label>
+<!--                <Button text="• 사원 조회" onAction="#showStaffView"/>-->
+                <Button text="• 사원 조회"/>
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <VBox BorderPane.alignment="CENTER">
+            <children>
+                <TabPane tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab text="공지" />
+                    </tabs>
+                </TabPane>
+                <VBox fx:id="contentArea" VBox.vgrow="ALWAYS">
+                </VBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>
+
+
+
+
