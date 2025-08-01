@@ -5,7 +5,6 @@ import com.example.bankservice1.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
@@ -15,7 +14,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.ListView;
@@ -26,7 +24,6 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -58,21 +55,16 @@ public class NoticeViewController implements Initializable {
 
     // NoticeListCell과 동일한 셀 높이 값을 상수로 정의
     private static final int FIXED_CELL_HEIGHT = 40;
-
-    Notice testNotice = new Notice(1,"테스트용 공지사항 제목", "이것은 팝업 테스트를 위한 공지사항 내용입니다.","2025-08-01" );
-
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 1. ListView의 각 셀을 어떻게 그릴지 설정 (기존과 동일)
-        noticeListView.setCellFactory(param -> new NoticeListCell());
+
         try {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiconstants.BASE_URL + "/api/notice"))// 로그인 API 주소
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + SessionManager.getInstance().getJwtToken())
+                .uri(URI.create(apiconstants.BASE_URL + "/api/notices"))// 로그인 API 주소
+                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
                 .GET()
                 .build();
 
@@ -90,6 +82,7 @@ public class NoticeViewController implements Initializable {
                             // JSON 배열을 Notice 객체 배열로 한 번에 파싱
                             Type noticeListType = new TypeToken<ArrayList<Notice>>(){}.getType();
 
+                            noticeListView.setCellFactory(param -> new NoticeListCell());
                             // 2. 정의한 타입으로 JSON을 파싱하여 List<Notice>를 직접 얻음
                             allNotices = gson.fromJson(responseBody, noticeListType);
 
@@ -97,7 +90,9 @@ public class NoticeViewController implements Initializable {
                             System.out.println("파싱된 공지사항 개수: " + allNotices.size());
                             System.out.println("첫 번째 공지사항 제목: " + allNotices.get(0).getNoticeTitle());
 
+                            setupPagination();
 
+                            showPage(1);
                         }
                         else if (response.statusCode() == 400) {
                             System.out.println("공지사항 불러오기 실패");
@@ -114,17 +109,6 @@ public class NoticeViewController implements Initializable {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "오류", "로그인 요청 중 오류가 발생했습니다.");
         }
-
-
-
-        // 2. 전체 더미 데이터를 생성
-
-
-        // 3. 전체 데이터 개수에 맞춰 페이지네이션 버튼들을 생성
-        setupPagination();
-
-        // 4. 앱이 시작되면 첫 번째 페이지를 기본으로 보여줌
-        showPage(1);
 
         noticeListView.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldSelection, newSelection) -> {

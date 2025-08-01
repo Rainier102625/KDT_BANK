@@ -1,29 +1,24 @@
 package com.example.bankservice1.model;
 
 public class User {
-
+    private String token;
     private String userName;
     private boolean admin;
 
-    public User(String name, boolean admin) {
+    public User(String token, String name, boolean admin) {
+        this.token = token;
         this.userName = name;
         this.admin = admin;
     }
-
     public String getUserName() {
         return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public boolean getAdmin() {
         return admin;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public String getJwtToken() {
+        return token;
     }
-
 }

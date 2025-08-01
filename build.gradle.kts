@@ -26,8 +26,8 @@ tasks.withType<JavaCompile> {
 }
 
 application {
-    mainModule.set("com.example.bankservice1")
-    mainClass.set("com.example.bankservice1.HelloApplication")
+    mainModule.set("com.example.bankservice1.view.Main")
+    mainClass.set("com.example.bankservice1.view.Main")
 }
 
 javafx {
@@ -55,6 +55,15 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    implementation("com.google.code.gson:gson:2.9.0")
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
+tasks.withType<JavaExec> {
+    jvmArgs("-Dfile.encoding=UTF-8")
 }
 
 tasks.withType<Test> {

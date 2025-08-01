@@ -12,6 +12,7 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.stage.*;
 
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.*;
 import java.net.http.HttpRequest;
@@ -64,26 +65,26 @@ public class loginController {
                         Platform.runLater(() -> {
                             if (response.statusCode() == 200) {
                                 // 로그인 성공 처리 (예: 메인 화면으로 전환)
-                                // 1. 응답 본문(JSON 문자열) 가져오기
+                                // 응답 본문(JSON 문자열) 가져오기
                                 String responseBody = response.body();
 
-                                // 2. Gson 객체 생성
+                                // Gson 객체 생성
                                 Gson gson = new Gson();
 
-                                // 3. JSON을 LoginResponse DTO 객체로 파싱
-                                LoginResponse loginResponse = gson.fromJson(responseBody, LoginResponse.class);
+                                // JSON을 User 객체로 파싱
+                                User user = gson.fromJson(responseBody, User.class);
 
-                                // 4. 파싱된 객체에서 데이터 추출
-                                String token = loginResponse.getToken();
-                                String userName = loginResponse.getUserName();
-                                boolean isAdmin = loginResponse.isAdmin();
+                                System.out.println(user);
 
-                                // 5. 추출한 정보로 User 객체 생성
-                                User userInfo = new User(userName, isAdmin);
+                                // 파싱된 객체에서 데이터 추출
+                                String token = user.getJwtToken();
+                                String userName = user.getUserName();
+                                boolean admin = user.getAdmin();
 
-                                // 6. 각 싱글톤에 데이터 저장
-                                SessionManager.getInstance().setJwtToken(token);
-                                UserSession.getInstance().login(userInfo);
+                                // 각 싱글톤에 데이터 저장
+                                tokenManager.getInstance().setJwtToken(token);
+                                UserSession.getInstance().setUserName(userName);
+                                UserSession.getInstance().setAdmin(admin);
                                 System.out.println("로그인 성공: " + responseBody);
                                 showAlert(Alert.AlertType.INFORMATION, "성공", "로그인에 성공했습니다.");
                                 // 여기서 화면 전환 로직 호출

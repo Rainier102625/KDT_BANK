@@ -13,6 +13,7 @@ public class NoticeListCell extends ListCell<Notice> {
 
     private BorderPane pane = new BorderPane();
     private HBox leftBox = new HBox(10);
+    private Label indexLabel = new Label();
     private Label titleLabel = new Label();
     private Label dateLabel = new Label();
 
@@ -27,7 +28,7 @@ public class NoticeListCell extends ListCell<Notice> {
         setAlignment(Pos.CENTER_LEFT);
 
         leftBox.setAlignment(Pos.CENTER_LEFT);
-        pane.setLeft(leftBox);
+        pane.setCenter(leftBox);
         pane.setRight(dateLabel);
 
     }
@@ -44,6 +45,7 @@ public class NoticeListCell extends ListCell<Notice> {
             if(!leftBox.getChildren().contains(titleLabel)) {
                 leftBox.getChildren().add(titleLabel);
             }
+            indexLabel.setText(Integer.toString(notice.getNoticeIndex()));
             titleLabel.setText(notice.getNoticeTitle());
             dateLabel.setText(notice.getNoticeContent());
 

@@ -31,6 +31,9 @@ public class MainViewController implements Initializable{
     @FXML
     private VBox contentArea;
 
+    @FXML
+    private TabPane tabPane;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // initialize() 메소드가 실행되자마자 공지사항 화면을 로드하는 메소드를 호출합니다.
