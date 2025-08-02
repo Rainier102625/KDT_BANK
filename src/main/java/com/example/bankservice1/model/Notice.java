@@ -27,12 +27,8 @@ public class Notice {
         this.noticeTitle = noticeTitle;
     }
 
-
-
     public Notice(int noticeIndex, String noticeTitle, String createdAt) {
-        this.noticeIndex = noticeIndex;
-        this.noticeTitle = noticeTitle;
-        this.createdAt = createdAt;
+        Notice notice = new Notice(noticeIndex, null,noticeTitle, createdAt);
     }
 
     public Notice(int noticeIndex, String noticeTitle, String noticeContent, String createdAt) {
