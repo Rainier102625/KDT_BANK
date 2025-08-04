@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="472.0" prefWidth="574.0" spacing="20" style="-fx-background-color: #E7EDF7;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" maxWidth="300.0" prefHeight="338.0" prefWidth="300.0" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+         <children>
+            <Label text="사원정보 수정">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <VBox spacing="5">
+               <children>
+                  <Label style="-fx-font-size: 12px;" text="이름" />
+                  <Label text="홍길동" />
+               </children>
+            </VBox>
+            <VBox spacing="5">
+               <children>
+                  <Label style="-fx-font-size: 12px;" text="전화번호" />
+                  <Label text="010-0000-0000" />
+                  <Label style="-fx-font-size: 12px;" text="부서" />
+                  <TextField fx:id="departField" promptText="영업부" />
+                  <Label style="-fx-font-size: 12px;" text="직급" />
+                  <TextField fx:id="rankField" promptText="사원" />
+                  <Label style="-fx-font-size: 12px;" text="관리자 여부" />
+                  <CheckBox mnemonicParsing="false" text="True" />
+               </children>
+            </VBox>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button mnemonicParsing="false" style="-fx-background-color: #2563eb; -fx-text-fill: white;" text="수정" />
+                  <Button mnemonicParsing="false" style="-fx-background-color: #f87171; -fx-text-fill: white;" text="취소" GridPane.columnIndex="1" />
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+   </children>
+</VBox>
