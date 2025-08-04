@@ -1,6 +1,9 @@
 package com.example.bankservice1.controller;
 
+import com.example.bankservice1.constants.apiconstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.event.*;
 import javafx.fxml.FXML;
@@ -9,6 +12,7 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.stage.*;
 
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.*;
 import java.net.http.HttpRequest;
@@ -17,7 +21,6 @@ import java.net.http.HttpResponse;
 import java.io.IOException;
 
 import com.example.bankservice1.model.*;
-import com.example.bankservice1.constants.apiconstants;
 
 public class loginController {
     @FXML
@@ -42,48 +45,16 @@ public class loginController {
 
         LoginDTO loginRequest = new LoginDTO(userId, userPw);
 
-        System.out.println("로그인 시도: ID = " + userId + ", PW = " + userPw);
-
-//        if(userId.trim().isEmpty() ){
-//            showAlert("아이디을 입력하세요");
-//
-//        }
-//        if( userPw.trim().isEmpty()){
-//            showAlert("비밀번호를 입력하세요");
-//        }
-//        if (userId.equals("") && userPw.equals("")) {
-//
-//        }
-        // 여기에 로그인 처리 로직을 구현합니다.
-//        try {
-//            // 1. 새로 로드할 FXML 파일의 경로를 지정합니다.
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("com/example/bankservice1/view/NoticeView.fxml"));
-//
-//            // 2. FXML 파일을 로드하여 새로운 화면(Parent 객체)을 생성합니다.
-//            Parent root = loader.load();
-//
-//            // 3. 현재 창(Stage)을 가져옵니다.
-//            //    (이벤트가 발생한 컨트롤로부터 Scene과 Window를 거슬러 올라가 Stage를 찾습니다.)
-//            Stage stage = (Stage) loginButton.getScene().getWindow();
-//
-//            // 4. 새로운 화면으로 Scene을 생성합니다.
-//            Scene scene = new Scene(root);
-//
-//            // 5. 현재 Stage에 새로운 Scene을 설정하여 화면을 전환합니다.
-//            stage.setScene(scene);
-//            stage.setTitle("메인화면"); // 창 제목을 변경할 수도 있습니다.
-//            stage.show();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
+        System.out.println("로그인 시도: ID = "  + userId + ", PW = " + userPw);
+        
         try {
+            //http에 담을 데이터 json으로 변환
             String requestBody = objectMapper.writeValueAsString(loginRequest);
             System.out.println(requestBody);
-
+            
+            //http 요청 생성
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiconstants.BASE_URL + "/api/auth/login")) // 로그인 API 주소
+                    .uri(URI.create(apiconstants.BASE_URL + "/api/auth/login"))// 로그인 API 주소
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -94,12 +65,30 @@ public class loginController {
                         Platform.runLater(() -> {
                             if (response.statusCode() == 200) {
                                 // 로그인 성공 처리 (예: 메인 화면으로 전환)
-                                String responseBody = response.body(); // JWT 토큰 등을 받을 수 있음
+                                // 응답 본문(JSON 문자열) 가져오기
+                                String responseBody = response.body();
 
-                                SessionManager.getInstance().setJwtToken(responseBody);
+                                // Gson 객체 생성
+                                Gson gson = new Gson();
+
+                                // JSON을 User 객체로 파싱
+                                User user = gson.fromJson(responseBody, User.class);
+
+                                System.out.println(user);
+
+                                // 파싱된 객체에서 데이터 추출
+                                String token = user.getJwtToken();
+                                String userName = user.getUserName();
+                                boolean admin = user.getAdmin();
+
+                                // 각 싱글톤에 데이터 저장
+                                tokenManager.getInstance().setJwtToken(token);
+                                UserSession.getInstance().setUserName(userName);
+                                UserSession.getInstance().setAdmin(admin);
                                 System.out.println("로그인 성공: " + responseBody);
                                 showAlert(Alert.AlertType.INFORMATION, "성공", "로그인에 성공했습니다.");
                                 // 여기서 화면 전환 로직 호출
+                                loadMainView();
                             }
                             else if (response.statusCode() == 400) {
                                 System.out.println("로그인 실패");
@@ -124,6 +113,21 @@ public class loginController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void loadMainView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/MainView.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("XiliBank");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "오류", "메인 화면을 불러오는 데 실패했습니다.");
+        }
     }
 
 //    private void showAlert(String msg) {

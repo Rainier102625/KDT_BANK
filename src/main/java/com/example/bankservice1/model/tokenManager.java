@@ -1,17 +1,17 @@
 package com.example.bankservice1.model;
 
-public class SessionManager {
+public class tokenManager {
 
     // 1. 싱글톤 인스턴스 생성
-    private static final SessionManager instance = new SessionManager();
+    private static final tokenManager instance = new tokenManager();
 
     private String jwtToken;
 
     // 2. 외부에서 생성자를 호출하지 못하도록 private으로 설정
-    private SessionManager() {}
+    private tokenManager() {}
 
     // 3. 인스턴스를 가져오는 public static 메서드
-    public static SessionManager getInstance() {
+    public static tokenManager getInstance() {
         return instance;
     }
 
