@@ -25,7 +25,8 @@ public class friendaddController {
     @FXML private TableColumn<Friend,String> department;
     @FXML private TableColumn<Friend,String> position;
     @FXML private TableColumn<Friend, Void> state;
-    @FXML private Button allsearch;
+    @FXML private Button search;
+    @FXML private TextField searchText;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -35,16 +36,26 @@ public class friendaddController {
         userName.setCellValueFactory(new PropertyValueFactory<>("userName"));
         department.setCellValueFactory(new PropertyValueFactory<>("department"));
         position.setCellValueFactory(new PropertyValueFactory<>("position"));
+
+        handleSearch(friendTable);
+        search.setOnAction(event -> handleSearch(friendTable));
+
         state.setCellFactory(column -> new TableCell<>() {
             private final Button moreButton = new Button("⋮");
             {
                 moreButton.setStyle("-fx-background-color: white; -fx-font-size: 12px; -fx-text-fill: black;");
 
-                MenuItem editItem = new MenuItem("추가");
-                MenuItem deleteItem = new MenuItem("취소");
-                deleteItem.setStyle("-fx-text-fill: red;");
+                MenuItem addItem = new MenuItem("추가");
+                MenuItem exitItem = new MenuItem("취소");
+                exitItem.setStyle("-fx-text-fill: red;");
 
-                ContextMenu contextMenu = new ContextMenu(editItem, deleteItem);
+                ContextMenu contextMenu = new ContextMenu(addItem, exitItem);
+
+                addItem.setOnAction(event -> {
+                    Friend selectedFriend = getTableView().getItems().get(getIndex());
+                    int userIndex = selectedFriend.getUserIndex();
+                    friendrequest(userIndex);
+                });
 
                 moreButton.setOnAction(e -> {
                     if(!contextMenu.isShowing()) {
@@ -65,36 +76,69 @@ public class friendaddController {
             }
         });
 
-        allsearch.setOnAction(e -> {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiconstants.BASE_URL + "/users"))
-                    .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
-                    .GET()
-                    .build();
-            System.out.println("🛡️ 토큰: " + tokenManager.getInstance().getJwtToken());
+    }
+    public void handleSearch(TableView<Friend> friendTable) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiconstants.BASE_URL + "/users"))
+                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                .GET()
+                .build();
 
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if(response.statusCode()==200) {
+                        try{
+                            String responseBody = response.body(); //응답 받아서 string으로 변환
+                            Friend[] friendArray = objectMapper.readValue(responseBody, Friend[].class); //위 내용을 friend 배열에 저장
+                            List<Friend> friendList = Arrays.asList(friendArray); //배열을 리스트로 변환
+
+                            String query = searchText.getText().trim();
+                            List<Friend> filterList = query.isEmpty() ? friendList : //검색어가 비어있을 경우 전체 friendList 출력
+                                    friendList.stream() //friendlist stream 생성
+                                            .filter(friend -> friend.getUserName().contains(query))
+                                            .toList(); //리스트로 반환
+
+                            Platform.runLater(() -> { //UI 스레드를 사용해서 friendtable 값을 friendlist에 있는 값으로 세팅
+                                friendTable.setItems(FXCollections.observableList(filterList));
+                            });
+                        } catch (Exception ex) {
+                            ex.printStackTrace(); //예외 발생 위치, 호출 경로 출력
+                        }
+                    } else{
+                        System.out.println("서버 오류" + response.statusCode());
+                    }
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return null;
+                });
+    }
+    private void friendrequest(int userIndex){
+        try {
+            String requestBody = String.format("{\"userIndex\": %d}", userIndex);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(apiconstants.BASE_URL + "/friends"))
+                    .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
             httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenAccept(response -> {
-                       if(response.statusCode()==200) {
-                           try{
-                               String responseBody = response.body(); //응답 받아서 string으로 변환
-                               Friend[] friendArray = objectMapper.readValue(responseBody, Friend[].class); //위 내용을 friend 배열에 저장
-                               List<Friend> friendList = Arrays.asList(friendArray); //배열을 리스트로 변환
-
-                               Platform.runLater(() -> { //UI 스레드를 사용해서 friendtable 값을 friendlist에 있는 값으로 세팅
-                                   friendTable.setItems(FXCollections.observableList(friendList));
-                               });
-                           } catch (Exception ex) {
-                               ex.printStackTrace(); //예외 발생 위치, 호출 경로 출력
-                           }
-                       } else{
-                           System.out.println("서버 오류" + response.statusCode());
-                       }
+                        System.out.println("응답 코드: " + response.statusCode());
+                        System.out.println("응답 바디: " + response.body());
+                        if(response.statusCode()==200) {
+                            System.out.println("success");
+                        } else {
+                            System.out.println("fail");
+                        }
                     })
                     .exceptionally(ex -> {
                         ex.printStackTrace();
                         return null;
                     });
-        });
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
