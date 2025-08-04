@@ -24,7 +24,7 @@ public class SignupController {
     @FXML private TextField rankField;
     private boolean sendSignupData(String id, String pw, String name, String pnum, String birth, String depart, String rank) {
         try {
-            URL url = new URL(apiconstants.BASE_URL + "/api/auth/register");
+            URL url = new URL(apiconstants.BASE_URL + "/auth/register");
             HttpURLConnection conn =(HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
