@@ -96,7 +96,7 @@ public class loginController {
                             }
                             else {
                                 // 로그인 실패 처리
-                                System.out.println("로그인 실패");
+                                System.out.println("응답 실패");
                                 showAlert(Alert.AlertType.ERROR, "실패", "잘못된 요청");
                             }
                         });

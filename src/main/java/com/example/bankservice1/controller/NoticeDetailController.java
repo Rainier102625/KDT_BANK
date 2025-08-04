@@ -89,7 +89,10 @@ public class NoticeDetailController{
     private void handleModify(Notice notice) {
         if(UserSession.getInstance().getAdmin()) {
             try {
-                NoticeDTO noticeDTO = new NoticeDTO(notice.getNoticeTitle(), notice.getNoticeContent());
+                String modifiedTitle = titleTextField.getText();
+                String modifiedContent = contentTextArea.getText();
+
+                NoticeDTO noticeDTO = new NoticeDTO(modifiedTitle, modifiedContent);
                 System.out.println(noticeDTO);
                 System.out.println("수정 메뉴 클릭됨");
                 //http에 담을 데이터 json으로 변환
@@ -110,7 +113,8 @@ public class NoticeDetailController{
                                 if (response.statusCode() == 200) {
                                     System.out.println("수정 성공");
                                     showAlert("수정 완료");
-
+                                    notice.setNoticeTitle(modifiedTitle);
+                                    notice.setNoticeContent(modifiedContent);
                                 } else if (response.statusCode() == 400) {
                                     System.out.println("수정 실패");
                                     showAlert(Alert.AlertType.ERROR, "실패", "사용자가 아닙니다.");
@@ -146,8 +150,9 @@ public class NoticeDetailController{
                                     System.out.println("삭제 성공");
                                     showAlert("삭제 완료");
 
+
                                 } else if (response.statusCode() == 400) {
-                                    System.out.println("수정 실패");
+                                    System.out.println("삭제 실패");
                                     showAlert(Alert.AlertType.ERROR, "실패", "사용자가 아닙니다.");
                                 } else {
                                     System.out.println("잘못된 접근");
@@ -157,7 +162,7 @@ public class NoticeDetailController{
                         });
             } catch (Exception e) {
                 e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "오류", "로그인 요청 중 오류가 발생했습니다.");
+                showAlert(Alert.AlertType.ERROR, "오류", "삭제 요청 중 오류가 발생했습니다.");
             }
         }
     }

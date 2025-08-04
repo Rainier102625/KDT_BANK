@@ -27,6 +27,8 @@ public class Notice {
         this.noticeTitle = noticeTitle;
     }
 
+    public Notice (){}
+
     public Notice(int noticeIndex, String noticeTitle, String createdAt) {
         Notice notice = new Notice(noticeIndex, null,noticeTitle, createdAt);
     }

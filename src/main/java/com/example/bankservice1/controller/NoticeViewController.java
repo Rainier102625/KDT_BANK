@@ -80,8 +80,7 @@ public class NoticeViewController implements Initializable {
                                 Gson gson = new Gson();
 
                                 // JSON 배열을 Notice 객체 배열로 한 번에 파싱
-                                Type noticeListType = new TypeToken<ArrayList<Notice>>() {
-                                }.getType();
+                                Type noticeListType = new TypeToken<ArrayList<Notice>>() { }.getType();
 
                                 noticeListView.setCellFactory(param -> new NoticeListCell());
                                 // 2. 정의한 타입으로 JSON을 파싱하여 List<Notice>를 직접 얻음
