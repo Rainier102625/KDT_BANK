@@ -77,7 +77,7 @@ public class ChatViewController {
         });
         inviteButton.setOnAction(e -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friendadd.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friendinvite.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = new Stage();
@@ -92,11 +92,11 @@ public class ChatViewController {
         });
         addUserButton.setOnAction(e -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friend.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friendadd.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = new Stage();
-                stage.setTitle("친구 초대");
+                stage.setTitle("친구 추가");
                 stage.setScene(new Scene(root));
                 stage.setResizable(false);
                 stage.show();

@@ -97,7 +97,7 @@ public class NoticeDetailController{
                 System.out.println(requestBody);
                 //http 요청 생성
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(apiconstants.BASE_URL + "/api/notices/" + Integer.toString(notice.getNoticeIndex())))
+                        .uri(URI.create(apiconstants.BASE_URL + "/notices/" + Integer.toString(notice.getNoticeIndex())))
                         .header("Content-Type", "application/json")// 로그인 API 주소
                         .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
                         .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
@@ -133,7 +133,7 @@ public class NoticeDetailController{
                 System.out.println("삭제 클릭됨");
                 //http 요청 생성
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(apiconstants.BASE_URL + "/api/notices/" + Integer.toString(notice.getNoticeIndex())))//
+                        .uri(URI.create(apiconstants.BASE_URL + "/notices/" + Integer.toString(notice.getNoticeIndex())))//
                         .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
                         .DELETE()
                         .build();
