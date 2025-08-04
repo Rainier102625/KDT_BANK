@@ -55,7 +55,7 @@
                 </VBox>
 
                 <!-- 버튼 -->
-                <Button maxWidth="Infinity" onAction="#handleSignupButton" style="-fx-background-color: #2563eb;                                -fx-text-fill: white;                                -fx-font-size: 14px;                                -fx-background-radius: 5;" text="회원가입" />
+                <Button maxWidth="Infinity" onAction="#handleSignupButton" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5;" text="회원가입" />
 
                 <!-- 로그인 안내 -->
                 <Label style="-fx-font-size: 12px; -fx-text-fill: #6b7280;" text="이미 계정이 있으신가요?" />
