@@ -38,7 +38,7 @@ public class friendaddController {
         state.setCellFactory(column -> new TableCell<>() {
             private final Button moreButton = new Button("⋮");
             {
-                moreButton.setStyle("-fx-background-color: white; -fx-font-size: 12px; -fx-text-fill: balck;");
+                moreButton.setStyle("-fx-background-color: white; -fx-font-size: 12px; -fx-text-fill: black;");
 
                 MenuItem editItem = new MenuItem("추가");
                 MenuItem deleteItem = new MenuItem("취소");

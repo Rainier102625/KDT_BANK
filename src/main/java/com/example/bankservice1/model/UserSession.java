@@ -1,7 +1,4 @@
 package com.example.bankservice1.model;
-
-
-
 public class UserSession {
     private static final UserSession instance = new UserSession();
 
