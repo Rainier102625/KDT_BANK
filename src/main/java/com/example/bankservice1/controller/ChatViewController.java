@@ -32,6 +32,7 @@ public class ChatViewController {
     @FXML private ListView<String> participantListView;
     @FXML private Button createGroupbtn;
     @FXML private Button inviteButton;
+    @FXML private Button addUserButton;
 
     @FXML
     public void initialize() {
@@ -77,6 +78,21 @@ public class ChatViewController {
         inviteButton.setOnAction(e -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friendadd.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = new Stage();
+                stage.setTitle("친구 초대");
+                stage.setScene(new Scene(root));
+                stage.setResizable(false);
+                stage.show();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        addUserButton.setOnAction(e -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friend.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = new Stage();
