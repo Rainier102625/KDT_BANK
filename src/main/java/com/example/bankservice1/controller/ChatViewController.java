@@ -77,7 +77,7 @@ public class ChatViewController {
         });
         inviteButton.setOnAction(e -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friendadd.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friendinvite.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = new Stage();
@@ -101,9 +101,12 @@ public class ChatViewController {
                 stage.setResizable(false);
                 stage.show();
 
+
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+
+
         });
 
         toggleFriendPanelButton.setOnAction(e -> {
