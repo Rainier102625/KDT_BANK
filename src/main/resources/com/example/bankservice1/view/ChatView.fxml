@@ -42,6 +42,15 @@
                     </graphic>
                 </ToggleButton>
                 <VBox fx:id="spacer" VBox.vgrow="ALWAYS" />
+                <Button fx:id="addUserButton" style="-fx-background-color: transparent;">
+                    <graphic>
+                        <ImageView fitHeight="18" fitWidth="18">
+                            <image>
+                                <Image url="@../../../../icons/adduser.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
                 <Button fx:id="createGroupbtn" style="-fx-background-color: transparent; -fx-border-color: #cccccc; -fx-border-style: dashed; -fx-border-width: 2px;" text="+" />
             </children>
         </VBox>
