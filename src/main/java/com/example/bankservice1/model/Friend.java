@@ -1,22 +1,27 @@
 package com.example.bankservice1.model;
 
 public class Friend {
-    private String name;
-    private String dapartment;
-    private String rank;
+    private String userName;
+    private String department;
+    private String position;
+    private int userIndex;
 
-    public Friend(String name, String department, String rank) {
-        this.name = name;
-        this.dapartment = department;
-        this.rank = rank;
+    public Friend(int userIndex, String userName, String department, String position) {
+        this.userIndex = userIndex;
+        this.userName = userName;
+        this.department = department;
+        this.position = position;
     }
-    public String getName() {
-        return name;
+    public int getUserIndex() {
+        return userIndex;
+    }
+    public String getUserName() {
+        return userName;
     }
     public String getDepartment() {
-        return dapartment;
+        return department;
     }
-    public String getRank() {
-        return rank;
+    public String getPosition() {
+        return position;
     }
 }

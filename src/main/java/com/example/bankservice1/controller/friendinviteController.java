@@ -21,8 +21,8 @@ public class friendinviteController {
         rank.setCellValueFactory(new PropertyValueFactory<>("rank"));
 
         ObservableList<Friend> friendList = FXCollections.observableArrayList(
-                new Friend("박우현", "영업부", "대리" ),
-                new Friend("조대원", "영업부", "사원" )
+                new Friend(1,"박우현", "영업부", "대리" ),
+                new Friend(2, "조대원", "영업부", "사원" )
         );
         friendTable.setItems(friendList);
     }

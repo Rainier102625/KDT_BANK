@@ -63,7 +63,7 @@ public class NoticeViewController implements Initializable {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiconstants.BASE_URL + "/api/notices"))// 로그인 API 주소
+                    .uri(URI.create(apiconstants.BASE_URL + "/notices"))// 로그인 API 주소
                     .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
                     .GET()
                     .build();
@@ -87,9 +87,7 @@ public class NoticeViewController implements Initializable {
                                 // 2. 정의한 타입으로 JSON을 파싱하여 List<Notice>를 직접 얻음
                                 allNotices = gson.fromJson(responseBody, noticeListType);
 
-                                // 결과 확인
-                                System.out.println("파싱된 공지사항 개수: " + allNotices.size());
-                                System.out.println("첫 번째 공지사항 제목: " + allNotices.get(0).getNoticeTitle());
+
 
                                 setupPagination();
 
@@ -168,7 +166,7 @@ public class NoticeViewController implements Initializable {
     private void showNoticePopup(Notice notice) {
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiconstants.BASE_URL + "/api/notices/" + notice.getNoticeIndex()))// 로그인 API 주소
+                    .uri(URI.create(apiconstants.BASE_URL + "/notices/" + notice.getNoticeIndex()))// 로그인 API 주소
                     .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
                     .GET()
                     .build();

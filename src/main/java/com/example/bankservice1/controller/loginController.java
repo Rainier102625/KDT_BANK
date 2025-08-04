@@ -54,7 +54,7 @@ public class loginController {
             
             //http 요청 생성
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiconstants.BASE_URL + "/api/auth/login"))// 로그인 API 주소
+                    .uri(URI.create(apiconstants.BASE_URL + "/auth/login"))// 로그인 API 주소
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();

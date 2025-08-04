@@ -34,7 +34,7 @@
                 <Button text="• 계좌 개설 승인" />
                 <Button text="• 고객 조회" />
                 <Button text="• 마이페이지" />
-                <Button text="• 채팅" />
+                <Button fx:id="ChatButton" onAction="#showChatView" text="• 채팅" />
 <!--                <Button text="• 공지사항" onAction="#showNoticeView"/>-->
 <!--                <Button text="• 상품 관리" onAction="#showProductView"/>-->
 <!--                <Button text="• 계좌 개설 승인" onAction="#showApprovalView"/>-->

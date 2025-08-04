@@ -11,6 +11,8 @@
 
 <?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
 <VBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS" style="-fx-background-color: #f4f6f8;" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.NoticeViewController">
     <padding>
         <Insets bottom="20.0" left="50.0" right="50.0" top="30.0" />
