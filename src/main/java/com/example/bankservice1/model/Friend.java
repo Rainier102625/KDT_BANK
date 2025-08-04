@@ -6,6 +6,8 @@ public class Friend {
     private String position;
     private int userIndex;
 
+    public Friend(){}
+
     public Friend(int userIndex, String userName, String department, String position) {
         this.userIndex = userIndex;
         this.userName = userName;
