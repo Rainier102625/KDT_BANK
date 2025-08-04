@@ -36,6 +36,8 @@ import java.net.http.HttpRequest;
 
 public class NoticeViewController implements Initializable {
 
+
+
 //    String requestBody = objectMapper.writeValueAsString(loginRequest);
 //    HttpRequest request = HttpRequest.newBuilder()
 //            .uri(URI.create(apiconstants.BASE_URL + "/api/auth/login"))// 로그인 API 주소
@@ -48,6 +50,9 @@ public class NoticeViewController implements Initializable {
     private ListView<Notice> noticeListView;
     @FXML
     private HBox paginationBox;
+
+    @FXML
+    private Button createNoticeBtn;
 
     private List<Notice> allNotices = new ArrayList<>();
 
@@ -80,13 +85,12 @@ public class NoticeViewController implements Initializable {
                                 Gson gson = new Gson();
 
                                 // JSON 배열을 Notice 객체 배열로 한 번에 파싱
-                                Type noticeListType = new TypeToken<ArrayList<Notice>>() { }.getType();
+                                Type noticeListType = new TypeToken<ArrayList<Notice>>() {
+                                }.getType();
 
                                 noticeListView.setCellFactory(param -> new NoticeListCell());
                                 // 2. 정의한 타입으로 JSON을 파싱하여 List<Notice>를 직접 얻음
                                 allNotices = gson.fromJson(responseBody, noticeListType);
-
-
 
                                 setupPagination();
 
@@ -114,6 +118,9 @@ public class NoticeViewController implements Initializable {
                     }
                 }
         );
+        createNoticeBtn.setOnAction(e -> showCreateNoticePopup());
+        
+        
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
@@ -169,6 +176,7 @@ public class NoticeViewController implements Initializable {
                     .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
                     .GET()
                     .build();
+
             // 비동기로 서버에 요청 전송
             httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenAccept(response -> {
@@ -218,6 +226,30 @@ public class NoticeViewController implements Initializable {
                         });
                     });
 
+    }
+    
+    
+    @FXML
+    private void showCreateNoticePopup() {
+
+        createNoticeBtn.setVisible(false);
+        createNoticeBtn.setManaged(false);
+        if(UserSession.getInstance().getAdmin()) {
+            createNoticeBtn.setVisible(true);
+            createNoticeBtn.setManaged(true);
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/NoticeCreateView.fxml"));
+                Parent root = loader.load();
+
+
+                // 3. 새로운 창(Stage) 생성
+                Stage popupStage = new Stage();
+                popupStage.setTitle("공지사항 상세 정보");
+                popupStage.setScene(new Scene(root));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

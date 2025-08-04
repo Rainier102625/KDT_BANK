@@ -29,7 +29,7 @@
                 </VBox>
             </left>
             <right>
-                <Button mnemonicParsing="false" style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-font-weight: bold;" text="+ 새 글" />
+                <Button fx:id="createNoticeBtn" onAction="#showCreateNoticePopup" mnemonicParsing="false" style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-font-weight: bold;" text="+ 새 글" />
             </right>
         </BorderPane>
         <ListView fx:id="noticeListView" prefHeight="400.0" >
