@@ -220,6 +220,4 @@ public class NoticeDetailController{
     private void showAlert(String message) {
         showAlert(Alert.AlertType.WARNING,"알림",message);
     }
-
-
 }

@@ -119,8 +119,6 @@ public class NoticeViewController implements Initializable {
                 }
         );
         createNoticeBtn.setOnAction(e -> showCreateNoticePopup());
-        
-        
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {

@@ -130,13 +130,13 @@ public class loginController {
         }
     }
 
-//    private void showAlert(String msg) {
-//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//        alert.setTitle("알림");
-//        alert.setHeaderText(null);
-//        alert.setContentText(msg);
-//        alert.showAndWait();
-//    }
+    private void showAlert(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("알림");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
 
     @FXML
     protected void handleSignUpButtonAction(ActionEvent event) {
