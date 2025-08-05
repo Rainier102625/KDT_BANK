@@ -8,22 +8,35 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class friendinviteController {
     @FXML private TableView<Friend> friendTable;
-    @FXML private TableColumn<Friend,String> name;
+    @FXML private TableColumn<Friend,String> userName;
     @FXML private TableColumn<Friend,String> department;
-    @FXML private TableColumn<Friend,String> rank;
+    @FXML private TableColumn<Friend,String> position;
+
+    ChatViewController chatViewController = new ChatViewController();
+
+    private List<Friend> friendsList = new ArrayList<>();
+
+    private ObservableList<Friend> friendObservableListList;
 
     @FXML
     public void initialize() {
-        name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        department.setCellValueFactory(new PropertyValueFactory<>("department"));
-        rank.setCellValueFactory(new PropertyValueFactory<>("rank"));
 
-        ObservableList<Friend> friendList = FXCollections.observableArrayList(
-                new Friend(1,"박우현", "영업부", "대리" ),
-                new Friend(2, "조대원", "영업부", "사원" )
-        );
-        friendTable.setItems(friendList);
+        userName.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        department.setCellValueFactory(new PropertyValueFactory<>("department"));
+        position.setCellValueFactory(new PropertyValueFactory<>("position"));
+
+        friendObservableListList = FXCollections.observableArrayList();
+        friendTable.setItems(friendObservableListList);
+    }
+    public void initData(List<Friend> friends) {
+        if (friends != null) {
+            friendObservableListList.setAll(friends);
+            System.out.println("전달받은 친구 목록 개수: " + friends.size());
+        }
     }
 }

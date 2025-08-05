@@ -14,10 +14,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         System.out.println("JavaFX 애플리케이션 시작...");
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/login.fxml"));
+
+            Parent root = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/Login.fxml"));
+
 //        // FXML 파일을 로드
 //        Parent root = FXMLLoader.load(getClass().getResource("NoticeView.fxml"));
-
 //        // Stage(윈도우) 설정
 //        primaryStage.setTitle("공지사항 관리 시스템");
 //        primaryStage.setScene(scene);
