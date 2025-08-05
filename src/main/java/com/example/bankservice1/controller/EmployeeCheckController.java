@@ -59,7 +59,7 @@ public class EmployeeCheckController {
 
                 deleteItem.setOnAction(event -> {
                     Employee selectedEmployee = getTableView().getItems().get(getIndex());
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION); //alert confirmation 사용시 확인 , 취소 두 가지 종류 버튼 생성
                     alert.setTitle("회원 삭제");
                     alert.setHeaderText(null);
                     alert.setContentText("정말 삭제하겠습니까?");

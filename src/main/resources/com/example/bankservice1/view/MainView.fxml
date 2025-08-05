@@ -5,11 +5,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
+<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
     <left>
         <VBox spacing="10.0" style="-fx-background-color: #f8f9fa;" BorderPane.alignment="CENTER">
             <padding>
@@ -20,10 +21,13 @@
                <children>
                   <BorderPane prefHeight="200.0" prefWidth="200.0">
                      <center>
-                        <ImageView fitHeight="74.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                        <ImageView fitHeight="74.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                           <image>
+                              <Image url="@../../../../icons/profile.png" />
+                           </image></ImageView>
                      </center>
                      <bottom>
-                        <Label text="ddd" BorderPane.alignment="CENTER" />
+                        <Label fx:id="name" text="ddd" BorderPane.alignment="CENTER" />
                      </bottom>
                   </BorderPane>
                </children>
@@ -32,8 +36,8 @@
                 <Button fx:id="NoticeViewButton" onAction="#showNoticeView" text="• 공지사항" />
                 <Button text="• 상품 관리" />
                 <Button text="• 계좌 개설 승인" />
-                <Button text="• 고객 조회" />
-                <Button text="• 마이페이지" />
+                <Button onAction="#showCustomerView" text="• 고객 조회" />
+                <Button onAction="#showMypage" text="• 마이페이지" />
                 <Button fx:id="ChatButton" onAction="#showChatView" text="• 채팅" />
 <!--                <Button text="• 공지사항" onAction="#showNoticeView"/>-->
 <!--                <Button text="• 상품 관리" onAction="#showProductView"/>-->
@@ -47,7 +51,7 @@
                     </VBox.margin>
                 </Label>
 <!--                <Button text="• 사원 조회" onAction="#showStaffView"/>-->
-                <Button text="• 사원 조회" />
+                <Button fx:id="employeeSearch" onAction="#showEmployeeCheckView" text="• 사원 조회" />
             </children>
         </VBox>
     </left>
