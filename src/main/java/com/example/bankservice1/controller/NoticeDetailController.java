@@ -82,7 +82,49 @@ public class NoticeDetailController{
 //        reportItem.setOnAction(event -> handleReport());
 
             // 3. MenuButton에 메뉴 아이템들 추가
-            noticeMenuBox.getItems().addAll(modifyItem, deleteItem);
+             noticeMenuBox.getItems().addAll(modifyItem, deleteItem);
+        }
+    }
+    @FXML
+    private void handleCreate() {
+        if(UserSession.getInstance().getAdmin()) {
+            try {
+                String modifiedTitle = titleTextField.getText();
+                String modifiedContent = contentTextArea.getText();
+
+                NoticeDTO noticeDTO = new NoticeDTO(modifiedTitle, modifiedContent);
+                System.out.println(noticeDTO);
+                System.out.println("수정 메뉴 클릭됨");
+
+                String requestBody = objectMapper.writeValueAsString(noticeDTO);
+                System.out.println(requestBody);
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(apiconstants.BASE_URL + "/notices" ))
+                        .header("Content-Type", "application/json")// 로그인 API 주소
+                        .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                        .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                        .build();
+                System.out.println(request.toString());
+                // 비동기로 서버에 요청 전송
+                httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                        .thenAccept(response -> {
+                            Platform.runLater(() -> {
+                                if (response.statusCode() == 200) {
+                                    System.out.println("생성 성공");
+                                    showAlert("생성 완료");
+                                } else if (response.statusCode() == 400) {
+                                    System.out.println("생성 실패");
+                                    showAlert(Alert.AlertType.ERROR, "실패", "사용자가 아닙니다.");
+                                } else {
+                                    System.out.println("잘못된 접근");
+                                    showAlert(Alert.AlertType.ERROR, "실패", "잘못된 요청");
+                                }
+                            });
+                        });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -95,10 +137,10 @@ public class NoticeDetailController{
                 NoticeDTO noticeDTO = new NoticeDTO(modifiedTitle, modifiedContent);
                 System.out.println(noticeDTO);
                 System.out.println("수정 메뉴 클릭됨");
-                //http에 담을 데이터 json으로 변환
+
                 String requestBody = objectMapper.writeValueAsString(noticeDTO);
                 System.out.println(requestBody);
-                //http 요청 생성
+
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(apiconstants.BASE_URL + "/notices/" + Integer.toString(notice.getNoticeIndex())))
                         .header("Content-Type", "application/json")// 로그인 API 주소
@@ -178,6 +220,4 @@ public class NoticeDetailController{
     private void showAlert(String message) {
         showAlert(Alert.AlertType.WARNING,"알림",message);
     }
-
-
 }

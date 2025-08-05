@@ -33,7 +33,7 @@
                </children>
             </VBox>
                 <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="메뉴" />
-                <Button fx:id="NoticeViewButton" onAction="#showNoticeView" text="• 공지사항" />
+                <Button fx:id="NoticeViewButton" onAction="#showNoticeView"  text="• 공지사항" />
                 <Button text="• 상품 관리" />
                 <Button text="• 계좌 개설 승인" />
                 <Button onAction="#showCustomerView" text="• 고객 조회" />

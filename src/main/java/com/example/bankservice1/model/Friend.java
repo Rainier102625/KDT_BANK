@@ -14,16 +14,19 @@ public class Friend {
         this.department = department;
         this.position = position;
     }
+
     public int getUserIndex() {
         return userIndex;
     }
     public String getUserName() {
         return userName;
     }
-    public String getDepartment() {
-        return department;
-    }
+    public String getDepartment() {return department;}
     public String getPosition() {
         return position;
+    }
+
+    public String toString(){
+        return userName + " " + department + " " + position;
     }
 }

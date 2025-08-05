@@ -35,9 +35,9 @@
                <children>
                       <TableView fx:id="friendTable" maxWidth="210.0" prefHeight="217.0" prefWidth="210.0">
                           <columns>
-                              <TableColumn fx:id="name" maxWidth="70.0" prefWidth="70.0" text="이름" />
+                              <TableColumn fx:id="userName" maxWidth="70.0" prefWidth="70.0" text="이름" />
                               <TableColumn fx:id="department" maxWidth="70.0" prefWidth="70.0" text="부서" />
-                              <TableColumn fx:id="rank" maxWidth="70.0" prefWidth="70.0" text="직급" />
+                              <TableColumn fx:id="position" maxWidth="70.0" prefWidth="70.0" text="직급" />
                           </columns>
                       </TableView>
                </children>
