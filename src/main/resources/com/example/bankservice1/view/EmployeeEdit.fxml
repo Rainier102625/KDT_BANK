@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="472.0" prefWidth="574.0" spacing="20" style="-fx-background-color: #E7EDF7;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" prefHeight="472.0" prefWidth="574.0" spacing="20" style="-fx-background-color: #E7EDF7;" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.EmployeeEditController">
    <children>
       <VBox alignment="CENTER" maxWidth="300.0" prefHeight="338.0" prefWidth="300.0" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
          <children>
@@ -22,19 +22,19 @@
             <VBox spacing="5">
                <children>
                   <Label style="-fx-font-size: 12px;" text="이름" />
-                  <Label text="홍길동" />
+                  <Label fx:id="userName" text="홍길동" />
                </children>
             </VBox>
             <VBox spacing="5">
                <children>
                   <Label style="-fx-font-size: 12px;" text="전화번호" />
-                  <Label text="010-0000-0000" />
+                  <TextField fx:id="userPhone" />
                   <Label style="-fx-font-size: 12px;" text="부서" />
-                  <TextField fx:id="departField" promptText="영업부" />
+                  <TextField fx:id="department" />
                   <Label style="-fx-font-size: 12px;" text="직급" />
-                  <TextField fx:id="rankField" promptText="사원" />
+                  <TextField fx:id="position" />
                   <Label style="-fx-font-size: 12px;" text="관리자 여부" />
-                  <CheckBox mnemonicParsing="false" text="True" />
+                  <CheckBox mnemonicParsing="false" text="True" fx:id="admin"/>
                </children>
             </VBox>
             <GridPane>
@@ -46,8 +46,8 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button mnemonicParsing="false" style="-fx-background-color: #2563eb; -fx-text-fill: white;" text="수정" />
-                  <Button mnemonicParsing="false" style="-fx-background-color: #f87171; -fx-text-fill: white;" text="취소" GridPane.columnIndex="1" />
+                  <Button mnemonicParsing="false" style="-fx-background-color: #2563eb; -fx-text-fill: white;" text="수정" fx:id="edit"/>
+                  <Button mnemonicParsing="false" style="-fx-background-color: #f87171; -fx-text-fill: white;" text="닫기" fx:id="cancel" GridPane.columnIndex="1" />
                </children>
             </GridPane>
          </children>
