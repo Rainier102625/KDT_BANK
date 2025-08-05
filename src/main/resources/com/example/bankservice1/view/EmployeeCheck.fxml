@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxWidth="700.0" prefHeight="493.0" prefWidth="606.0" style="-fx-background-color: #E7EDF7;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.CustomerCheckController">
+<AnchorPane maxWidth="700.0" prefHeight="529.0" prefWidth="596.0" style="-fx-background-color: #E7EDF7;" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.EmployeeCheckController">
     <children>
         <!-- 상단 타이틀 -->
         <VBox layoutX="30" layoutY="30" spacing="5">
@@ -13,8 +22,7 @@
         </VBox>
 
         <!-- 필터 및 검색 영역 -->
-        <VBox layoutX="50.0" layoutY="102.0" maxWidth="600.0" prefHeight="112.0" prefWidth="515.0" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
-         <Button style="-fx-background-color: #2563eb; -fx-text-fill: white;" text="전체 조회" />
+        <VBox layoutX="63.0" layoutY="94.0" maxWidth="600.0" prefHeight="81.0" prefWidth="469.0" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
             <GridPane>
                 <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="162.0" minWidth="10.0" prefWidth="160.79998779296875" />
@@ -29,32 +37,30 @@
                 </children>
             </GridPane>
             <HBox spacing="15">
-                <TextField promptText="🔍검색어 입력" />
-                <TextField promptText="🔍검색어 입력" />
-                <Button style="-fx-background-color: #2563eb; -fx-text-fill: white;" text="조회하기" />
+                <TextField fx:id="searchName" promptText="🔍검색어 입력" />
+                <TextField fx:id="searchDepartment" promptText="🔍검색어 입력" />
+                <Button fx:id="employeeSearch" prefHeight="21.0" prefWidth="109.0" style="-fx-background-color: #2563eb; -fx-text-fill: white;" text="조회하기" />
             </HBox>
         </VBox>
-        <VBox layoutX="50.0" layoutY="247.0" maxWidth="600.0" prefHeight="225.0" prefWidth="515.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 8;">
+        <VBox layoutX="63.0" layoutY="192.0" maxWidth="600.0" prefHeight="246.0" prefWidth="469.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 8;">
             <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="사원 목록">
                 <padding>
                     <Insets left="5.0" />
                 </padding>
             </Label>
-         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+            <VBox spacing="15" />
+         <VBox alignment="CENTER" prefHeight="202.0" prefWidth="435.0">
             <children>
-               <TableView maxWidth="460.0" prefHeight="200.0" prefWidth="460.0">
+               <TableView fx:id="employeeTable" maxWidth="350.0" prefHeight="185.0" prefWidth="350.0">
                  <columns>
-                   <TableColumn maxWidth="70.0" minWidth="70.0" prefWidth="75.0" text="이름" />
-                   <TableColumn maxWidth="130.0" minWidth="130.0" prefWidth="75.0" text="전화번호" />
-                     <TableColumn maxWidth="70.0" minWidth="70.0" prefWidth="75.0" text="부서" />
-                     <TableColumn maxWidth="70.0" minWidth="70.0" prefWidth="75.0" text="직급" />
-                     <TableColumn maxWidth="70.0" minWidth="70.0" prefWidth="75.0" text="관리자 여부" />
-                     <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="75.0" text="수정" />
+                   <TableColumn fx:id="userName" maxWidth="100.0" minWidth="100.0" prefWidth="75.0" text="이름" />
+                     <TableColumn fx:id="department" maxWidth="100.0" minWidth="100.0" prefWidth="75.0" text="부서" />
+                     <TableColumn fx:id="position" maxWidth="100.0" minWidth="100.0" prefWidth="75.0" text="직급" />
+                     <TableColumn fx:id="state" maxWidth="50.0" minWidth="50.0" prefWidth="75.0" text="상태" />
                  </columns>
                </TableView>
             </children>
          </VBox>
-            <VBox spacing="15" />
             <padding>
                 <Insets top="10.0" />
             </padding></VBox>
