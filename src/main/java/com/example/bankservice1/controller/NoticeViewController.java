@@ -229,7 +229,6 @@ public class NoticeViewController implements Initializable {
     
     @FXML
     private void showCreateNoticePopup() {
-
         createNoticeBtn.setVisible(false);
         createNoticeBtn.setManaged(false);
         if(UserSession.getInstance().getAdmin()) {

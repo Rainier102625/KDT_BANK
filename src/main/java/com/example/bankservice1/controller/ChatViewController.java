@@ -1,6 +1,7 @@
 package com.example.bankservice1.controller;
 
 import com.example.bankservice1.constants.apiconstants;
+import com.example.bankservice1.model.ChatRoom;
 import com.example.bankservice1.model.Friend;
 import com.example.bankservice1.model.User;
 import com.example.bankservice1.model.tokenManager;
@@ -53,13 +54,15 @@ public class ChatViewController {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
+    //친구 리스트
     @FXML private ListView<Friend> friendListView;
-
     private ObservableList<Friend> friendObservableList;
-
     private List<Friend> friendsListset = new ArrayList<>();
 
-    @FXML private ListView<String> chatListView;
+    // 채팅방 리스트
+    @FXML private ListView<ChatRoom> chatListView;
+    private ObservableList<ChatRoom> chatObservableList;
+    private List<ChatRoom> ChatRoomList = new ArrayList<>();
 
     public ChatViewController() {}
 
@@ -70,7 +73,7 @@ public class ChatViewController {
     @FXML
     public void initialize() {
         FriendListSet();
-
+        ChatListSet();
         friendList.setVisible(true);
         friendList.setManaged(true);
         chatList.setVisible(false);
@@ -150,7 +153,7 @@ public class ChatViewController {
 
         chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                openChatRoom(newVal);
+                openChatRoom(String.valueOf(newVal));
             } //채팅방 클릭시 openchatroom
         });
 
@@ -199,7 +202,7 @@ public class ChatViewController {
     }
 
     @FXML
-    public void FriendListSet(){
+    private void FriendListSet(){
 
         friendObservableList = FXCollections.observableArrayList();
         friendListView.setItems(friendObservableList);
@@ -231,4 +234,39 @@ public class ChatViewController {
                 return null;
             });
     }
+
+    @FXML
+    private void ChatListSet(){
+
+        chatObservableList = FXCollections.observableArrayList();
+        chatListView.setItems(chatObservableList);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiconstants.BASE_URL + "/chat/me"))
+                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                .GET()
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if(response.statusCode()==200) {
+                        try{
+                            String responseBody = response.body(); //응답 받아서 string으로 변환
+
+                            // json 객체 리스트를 바로 friend 리스트에 저장
+                            ChatRoomList = objectMapper.readValue(responseBody, new TypeReference<List<ChatRoom>>() {});
+                            chatObservableList.setAll(ChatRoomList);
+                        } catch (Exception ex) {
+                            ex.printStackTrace(); //예외 발생 위치, 호출 경로 출력
+                        }
+                    } else{
+                        System.out.println("서버 오류" + response.statusCode());
+                    }
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return null;
+                });
+    }
+
 }

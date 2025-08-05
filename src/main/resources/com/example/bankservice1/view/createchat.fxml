@@ -66,8 +66,8 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                        <Button style="-fx-background-color: #2d6ef6; -fx-text-fill: white; -fx-font-weight: bold;" text="생성" GridPane.halignment="CENTER" />
-                  <Button style="-fx-background-color: #f87171; -fx-text-fill: white; -fx-font-weight: bold;" text="닫기" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                        <Button fx:id="chatCreateBtn" onAction="#handleCreateButtonClick" style="-fx-background-color: #2d6ef6; -fx-text-fill: white; -fx-font-weight: bold;" text="생성" GridPane.halignment="CENTER" />
+                  <Button fx:id="chatCloseBtn" onAction="#handleCloseButtonClick" style="-fx-background-color: #f87171; -fx-text-fill: white; -fx-font-weight: bold;" text="닫기" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                </children>
             </GridPane>
             </VBox>
