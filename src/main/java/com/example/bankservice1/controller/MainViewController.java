@@ -33,11 +33,14 @@ public class MainViewController implements Initializable{
 
     @FXML
     private TabPane tabPane;
+    @FXML private Label name;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // initialize() 메소드가 실행되자마자 공지사항 화면을 로드하는 메소드를 호출합니다.
         showNoticeView();
+        String userName = UserSession.getInstance().getUserName();
+        name.setText(userName);
     }
 
     @FXML
@@ -63,9 +66,31 @@ public class MainViewController implements Initializable{
         }
     }
     @FXML
+    private void showCustomerView() {
+        try {
+            Parent chatPage = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/CustomerSearch.fxml"));
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(chatPage);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "오류", "메인 화면을 불러오는 데 실패했습니다.");
+        }
+    }
+    @FXML
     private void showEmployeeCheckView() {
         try {
             Parent chatPage = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/EmployeeCheck.fxml"));
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(chatPage);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "오류", "메인 화면을 불러오는 데 실패했습니다.");
+        }
+    }
+    @FXML
+    private void showMypage() {
+        try {
+            Parent chatPage = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/mypage.fxml"));
             contentArea.getChildren().clear();
             contentArea.getChildren().add(chatPage);
         } catch (IOException e) {
