@@ -35,7 +35,7 @@
                 <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="메뉴" />
                 <Button fx:id="NoticeViewButton" onAction="#showNoticeView"  text="• 공지사항" />
                 <Button text="• 상품 관리" onAction="#showProductManagement" />
-                <Button text="• 계좌 개설 승인" />
+                <Button text="• 계좌 개설 승인" onAction="#showAccountApprovalView" />
                 <Button onAction="#showCustomerView" text="• 고객 조회" />
                 <Button onAction="#showMypage" text="• 마이페이지" />
                 <Button fx:id="ChatButton" onAction="#showChatView" text="• 채팅" />
