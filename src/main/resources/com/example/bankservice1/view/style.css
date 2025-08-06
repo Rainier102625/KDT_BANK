@@ -59,3 +59,25 @@
     -fx-background-color: #d0d0d0;
     -fx-background-radius: 50%;
 }
+
+.transparent-button {
+    /* 배경을 투명하게 만듭니다. */
+    -fx-background-color: transparent;
+
+    /* 배경의 안쪽 여백과 둥근 모서리를 제거합니다. */
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+
+    /* 테두리를 없앱니다. */
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+
+    /* 내용물(텍스트) 주변의 여백을 조절합니다. (필요에 따라 조절) */
+    -fx-padding: 1 3 1 3; /* 위, 오른쪽, 아래, 왼쪽 */
+}
+
+/* (선택 사항) 마우스를 올렸을 때 간단한 시각적 피드백 추가 */
+.transparent-button:hover {
+    -fx-underline: true; /* 텍스트에 밑줄 효과 */
+    -fx-text-fill: #0000ff; /* 텍스트 색상을 파란색으로 변경 */
+}

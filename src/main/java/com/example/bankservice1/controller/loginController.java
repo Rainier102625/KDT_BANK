@@ -19,6 +19,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.example.bankservice1.model.*;
 
@@ -126,6 +127,7 @@ public class loginController {
             stage.setScene(scene);
             stage.setTitle("XiliBank");
             stage.show();
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/bankservice1/view/style.css")).toExternalForm());
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "오류", "메인 화면을 불러오는 데 실패했습니다.");

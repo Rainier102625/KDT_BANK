@@ -3,8 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -27,45 +25,34 @@
                            </image></ImageView>
                      </center>
                      <bottom>
-                        <Label fx:id="name" text="ddd" BorderPane.alignment="CENTER" />
+                        <Label fx:id="name" BorderPane.alignment="CENTER" />
                      </bottom>
                   </BorderPane>
                </children>
             </VBox>
                 <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="메뉴" />
-                <Button fx:id="NoticeViewButton" onAction="#showNoticeView"  text="• 공지사항" />
-                <Button text="• 상품 관리" onAction="#showProductManagement" />
-                <Button text="• 계좌 개설 승인" />
-                <Button onAction="#showCustomerView" text="• 고객 조회" />
-                <Button onAction="#showMypage" text="• 마이페이지" />
-                <Button fx:id="ChatButton" onAction="#showChatView" text="• 채팅" />
-<!--                <Button text="• 공지사항" onAction="#showNoticeView"/>-->
-<!--                <Button text="• 상품 관리" onAction="#showProductView"/>-->
-<!--                <Button text="• 계좌 개설 승인" onAction="#showApprovalView"/>-->
-<!--                <Button text="• 고객 조회" onAction="#showSearchForCustomerView"/>-->
-<!--                <Button text="• 마이페이지" onAction="#showMyPageView"/>-->
-<!--                <Button text="• 채팅" onAction="#showChatView"/>-->
+                <Button fx:id="NoticeViewButton" onAction="#showNoticeView" styleClass="transparent-button" text="• 공지사항" />
+                <Button onAction="#showProductManagement" styleClass="transparent-button" text="• 상품 관리" />
+                <Button styleClass="transparent-button" text="• 계좌 개설 승인" />
+                <Button onAction="#showCustomerView" styleClass="transparent-button" text="• 고객 조회" />
+                <Button onAction="#showMypage" styleClass="transparent-button" text="• 마이페이지" />
+                <Button fx:id="ChatButton" onAction="#showChatView" styleClass="transparent-button" text="• 채팅" />
                 <Label layoutX="25.0" layoutY="25.0" style="-fx-font-weight: bold; -fx-font-size: 16px;" text="관리자 메뉴">
                     <VBox.margin>
                         <Insets top="20.0" />
                     </VBox.margin>
                 </Label>
-<!--                <Button text="• 사원 조회" onAction="#showStaffView"/>-->
-                <Button fx:id="employeeSearch" onAction="#showEmployeeCheckView" text="• 사원 조회" />
+                <Button fx:id="employeeSearch" onAction="#showEmployeeCheckView" styleClass="transparent-button" text="• 사원 조회" />
+            <BorderPane prefHeight="121.0" prefWidth="79.0">
+               <bottom>
+                  <Button mnemonicParsing="false" styleClass="transparent-button" text="로그아웃" BorderPane.alignment="CENTER" />
+               </bottom>
+            </BorderPane>
             </children>
         </VBox>
     </left>
     <center>
-        <VBox BorderPane.alignment="CENTER">
-            <children>
-                <TabPane tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                        <Tab text="공지" />
-                    </tabs>
-                </TabPane>
-                <VBox fx:id="contentArea" VBox.vgrow="ALWAYS">
-                </VBox>
-            </children>
+        <VBox BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS" fx:id="contentArea" >
         </VBox>
     </center>
 </BorderPane>
