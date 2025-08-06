@@ -78,6 +78,7 @@ public class loginController {
 
                                 // 파싱된 객체에서 데이터 추출
                                 String token = user.getJwtToken();
+                                long userIndex = user.getUserIndex();
                                 String userName = user.getUserName();
                                 boolean admin = user.getAdmin();
 
@@ -85,6 +86,7 @@ public class loginController {
                                 tokenManager.getInstance().setJwtToken(token);
                                 UserSession.getInstance().setUserName(userName);
                                 UserSession.getInstance().setAdmin(admin);
+                                UserSession.getInstance().setUserIndex(userIndex);
                                 System.out.println("로그인 성공: " + responseBody);
                                 showAlert(Alert.AlertType.INFORMATION, "성공", "로그인에 성공했습니다.");
                                 // 여기서 화면 전환 로직 호출

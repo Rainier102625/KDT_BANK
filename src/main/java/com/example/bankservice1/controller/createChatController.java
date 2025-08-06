@@ -125,6 +125,8 @@ public class createChatController {
         }
     }
 
+
+
     @FXML
     private void handleCloseButtonClick(javafx.event.ActionEvent event){
         Stage stage = (Stage) chatCloseBtn.getScene().getWindow();

@@ -74,6 +74,7 @@ public class MainViewController implements Initializable{
             showAlert(Alert.AlertType.ERROR, "오류", "메인 화면을 불러오는 데 실패했습니다.");
         }
     }
+
     @FXML
     private void showCustomerView() {
         try {
@@ -85,6 +86,7 @@ public class MainViewController implements Initializable{
             showAlert(Alert.AlertType.ERROR, "오류", "메인 화면을 불러오는 데 실패했습니다.");
         }
     }
+
     @FXML
     private void showEmployeeCheckView() {
         try {
@@ -131,5 +133,4 @@ public class MainViewController implements Initializable{
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 }
