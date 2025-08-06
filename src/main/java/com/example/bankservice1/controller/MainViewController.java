@@ -64,6 +64,17 @@ public class MainViewController implements Initializable{
         }
     }
     @FXML
+    private void showAccountApprovalView() {
+        try {
+            Parent noticePage = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/Accountapproval.fxml"));
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(noticePage);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "오류", "메인 화면을 불러오는 데 실패했습니다.");
+        }
+    }
+    @FXML
     private void showChatView() {
         try {
             Parent chatPage = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/ChatView.fxml"));
