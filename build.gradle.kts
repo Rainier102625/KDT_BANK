@@ -1,7 +1,6 @@
 plugins {
     java
     application
-    id("org.javamodularity.moduleplugin") version "1.8.12"
     id("org.openjfx.javafxplugin") version "0.0.13"
     id("org.beryx.jlink") version "2.25.0"
 }
@@ -26,7 +25,6 @@ tasks.withType<JavaCompile> {
 }
 
 application {
-    mainModule.set("com.example.bankservice1.view.Main")
     mainClass.set("com.example.bankservice1.view.Main")
 }
 
@@ -34,6 +32,9 @@ javafx {
     version = "21"
     modules = listOf("javafx.controls", "javafx.fxml", "javafx.web", "javafx.swing", "javafx.media")
 }
+val springVersion = "6.1.10"  // Spring Framework 6.1.x 최신 버전
+val tomcatVersion = "10.1.25" // Tomcat 10.1.x 최신 버전
+val jacksonVersion = "2.17.1"
 
 dependencies {
     implementation("org.controlsfx:controlsfx:11.2.1")
@@ -55,7 +56,13 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-    implementation("com.google.code.gson:gson:2.9.0")
+
+    implementation("org.springframework:spring-websocket:${springVersion}")
+    implementation("org.springframework:spring-messaging:${springVersion}")
+    implementation("org.apache.tomcat.embed:tomcat-embed-websocket:${tomcatVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
+
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.1")
 }
 
 tasks.withType<JavaCompile> {
