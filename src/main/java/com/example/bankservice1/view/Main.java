@@ -15,7 +15,7 @@ public class Main extends Application {
         System.out.println("JavaFX 애플리케이션 시작...");
         try {
 
-            Parent root = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/Login.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/login.fxml"));
 
 //        // FXML 파일을 로드
 //        Parent root = FXMLLoader.load(getClass().getResource("NoticeView.fxml"));

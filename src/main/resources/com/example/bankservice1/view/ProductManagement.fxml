@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -14,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import java.net.URL?>
+
 <AnchorPane maxWidth="700.0" prefHeight="570.0" prefWidth="700.0" style="-fx-background-color: #E7EDF7;" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.ProductManagementController">
     <children>
         <!-- 상단 타이틀 -->
@@ -28,8 +25,8 @@
             <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="필터 및 검색" />
             <GridPane>
                 <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="162.0" minWidth="10.0" prefWidth="150.0" />
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="138.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="160.0" minWidth="10.0" prefWidth="130.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="10.0" prefWidth="138.0" />
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 </columnConstraints>
                 <rowConstraints>
@@ -37,32 +34,13 @@
                 </rowConstraints>
                 <children>
                     <Label text="상품 검색" />
-                    <Label text="상품 종류" GridPane.columnIndex="1" />
-                    <Label prefHeight="13.0" prefWidth="62.0" text="기간" GridPane.columnIndex="2" />
+                    <Label prefWidth="61.0" text="상품 종류" GridPane.columnIndex="1" />
                 </children>
             </GridPane>
             <HBox spacing="15">
-                <TextField promptText="🔍상품명 또는 종류 검색" />
-                <ComboBox prefWidth="120" promptText="전체">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="전체" />
-                            <String fx:value="입출금" />
-                            <String fx:value="적금" />
-                            <String fx:value="예금" />
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-                <ComboBox prefWidth="120" promptText="전체">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="전체" />
-                            <String fx:value="6개월" />
-                            <String fx:value="12개월" />
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-                <Button text="초기화" />
+                <TextField fx:id="nameSearch" promptText="🔍상품명 검색" />
+            <TextField fx:id="typeSearch" promptText="🔍종류 검색" />
+                <Button fx:id="Search" prefHeight="21.0" prefWidth="75.0" text="검색" />
             </HBox>
         </VBox>
         <VBox alignment="CENTER" layoutX="77.0" layoutY="220.0" maxHeight="355.0" maxWidth="600.0" prefHeight="308.0" prefWidth="546.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
@@ -71,22 +49,21 @@
                 <!-- 승인 요청 목록 -->
                 <VBox spacing="10">
                     <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="상품 목록" />
-                    <Label style="-fx-text-fill: #666;" text="총 3개의 상품이 있습니다." />
 
                     <!-- 요청 카드 예시 -->
                     <VBox spacing="15" />
                 </VBox>
-            <TableView fx:id="productTable" maxWidth="380.0" prefHeight="217.0" prefWidth="380.0" >
+            <TableView fx:id="productTable" maxWidth="380.0" prefHeight="238.0" prefWidth="380.0">
               <columns>
-                <TableColumn fx:id="product_name" maxWidth="130.0" prefWidth="130.0" text="상품 이름" />
-                <TableColumn fx:id="products_type" maxWidth="70.0" prefWidth="70.0" text="상품 종류" />
-                  <TableColumn fx:id="products_duration" maxWidth="70.0" prefWidth="70.0" text="기간" />
-                  <TableColumn fx:id="interest_rate" maxWidth="70.0" prefWidth="70.0" text="이율" />
-                  <TableColumn fx:id= "state" maxWidth="40.0" prefWidth="40.0" text="상태" />
+                <TableColumn fx:id="productName" maxWidth="130.0" prefWidth="130.0" text="상품 이름" />
+                <TableColumn fx:id="type" maxWidth="70.0" prefWidth="70.0" text="상품 종류" />
+                  <TableColumn fx:id="duration" maxWidth="70.0" prefWidth="70.0" text="기간" />
+                  <TableColumn fx:id="rate" maxWidth="70.0" prefWidth="70.0" text="이율" />
+                  <TableColumn fx:id="state" maxWidth="40.0" prefWidth="40.0" text="상태" />
               </columns>
             </TableView>
             </children>
         </VBox>
-      <Button layoutX="560.0" layoutY="30.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" style="-fx-background-color: #2563eb; -fx-text-fill: white;" text="+   상품추가" />
+      <Button fx:id="productAdd" layoutX="536.0" layoutY="30.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" style="-fx-background-color: #2563eb; -fx-text-fill: white;" text="+   상품추가" />
     </children>
 </AnchorPane>

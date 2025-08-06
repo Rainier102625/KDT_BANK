@@ -1,28 +1,23 @@
 package com.example.bankservice1.model;
 
 public class Product {
-    private int products_duration;
-    private int interest_rate;
-    private String products_type;
-    private String product_name;
-
-    public Product(String product_name, String products_type, int products_duration, int interest_rate) {
-        this.product_name = product_name;
-        this.products_type = products_type;
-        this.products_duration = products_duration;
-        this.interest_rate = interest_rate;
+    private int productsIndex;
+    private String type;
+    private  double rate;
+    private String productName;
+    private int duration;
+    public Product() {}
+    public Product(int productsIndex, String type, double rate, String productName, int duration) {
+        this.productsIndex = productsIndex;
+        this.type = type;
+        this.rate = rate;
+        this.productName = productName;
+        this.duration = duration;
     }
-    public String getProduct_name() {
-        return product_name;
-    }
-    public String getProducts_type() {
-        return products_type;
-    }
-    public int getProducts_duration() {
-        return products_duration;
-    }
-    public int getInterest_rate() {
-        return interest_rate;
-    }
+    public int getProductsIndex() {return productsIndex;}
+    public String getType() {return type;}
+    public double getRate() {return rate;}
+    public String getProductName() {return productName;}
+    public int getDuration() {return duration;}
 
 }
