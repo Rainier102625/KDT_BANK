@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
+<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
     <left>
         <VBox spacing="10.0" style="-fx-background-color: #f8f9fa;" BorderPane.alignment="CENTER">
             <padding>
@@ -34,7 +34,7 @@
             </VBox>
                 <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="메뉴" />
                 <Button fx:id="NoticeViewButton" onAction="#showNoticeView"  text="• 공지사항" />
-                <Button text="• 상품 관리" />
+                <Button text="• 상품 관리" onAction="#showProductManagement" />
                 <Button text="• 계좌 개설 승인" />
                 <Button onAction="#showCustomerView" text="• 고객 조회" />
                 <Button onAction="#showMypage" text="• 마이페이지" />

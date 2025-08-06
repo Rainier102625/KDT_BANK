@@ -9,12 +9,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.awt.*;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -41,6 +46,13 @@ public class CustomerSearchController {
         customerBirth.setCellValueFactory(new PropertyValueFactory<>("customerBirth"));
 
         handleSearchCustomer(customerTable);
+
+        customerTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && !customerTable.getSelectionModel().isEmpty()) {
+                Customers selectedCustomer = customerTable.getSelectionModel().getSelectedItem(); //선택된 고객 객체를 가져와서 selectedCustomer에 저장
+                handleCustomerPopup(selectedCustomer);
+            }
+        });
     }
     private void handleSearchCustomer(TableView<Customers> tableView) {
         HttpRequest request = HttpRequest.newBuilder()
@@ -79,5 +91,21 @@ public class CustomerSearchController {
                     ex.printStackTrace();
                     return null;
                 });
+    }
+    private void handleCustomerPopup(Customers customers) {
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/CustomerCheck.fxml"));
+            Parent root = loader.load();
+
+            CustomerCheckController controller = loader.getController();
+            controller.setCustomer(customers);
+
+            Stage stage = new Stage();
+            stage.setTitle("고객 상세 정보");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
