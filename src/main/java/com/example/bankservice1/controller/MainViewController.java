@@ -98,6 +98,17 @@ public class MainViewController implements Initializable{
             showAlert(Alert.AlertType.ERROR, "오류", "메인 화면을 불러오는 데 실패했습니다.");
         }
     }
+    @FXML
+    private void showProductManagement() {
+        try {
+            Parent chatPage = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/ProductManagement.fxml"));
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(chatPage);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "오류", "메인 화면을 불러오는 데 실패했습니다.");
+        }
+    }
 
     @FXML
     public void createNotice(){
