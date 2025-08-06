@@ -43,7 +43,7 @@
                 <TextField fx:id="searchName" promptText="🔍검색어 입력" />
                 <TextField fx:id="searchPhone" promptText="🔍검색어 입력" />
                 <TextField fx:id="searchBirth" promptText="🔍검색어 입력" />
-                <Button prefHeight="21.0" prefWidth="72.0" style="-fx-background-color: #2563eb; -fx-text-fill: white;" text="초기화" />
+                <Button prefHeight="21.0" prefWidth="90.0" style="-fx-background-color: #2563eb; -fx-text-fill: white;" text="검색" fx:id="Search"/>
             </HBox>
         </VBox>
         <VBox alignment="CENTER" layoutX="50.0" layoutY="228.0" prefHeight="225.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 8;">

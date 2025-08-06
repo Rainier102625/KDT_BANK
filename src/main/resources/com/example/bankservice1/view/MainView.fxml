@@ -45,7 +45,7 @@
 <!--                <Button text="• 고객 조회" onAction="#showSearchForCustomerView"/>-->
 <!--                <Button text="• 마이페이지" onAction="#showMyPageView"/>-->
 <!--                <Button text="• 채팅" onAction="#showChatView"/>-->
-                <Label layoutX="25.0" layoutY="25.0" style="-fx-font-weight: bold; -fx-font-size: 16px;" text="관리자 메뉴">
+                <Label fx:id="menu" layoutX="25.0" layoutY="25.0" style="-fx-font-weight: bold; -fx-font-size: 16px;" text="관리자 메뉴">
                     <VBox.margin>
                         <Insets top="20.0" />
                     </VBox.margin>
