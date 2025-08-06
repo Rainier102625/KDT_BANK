@@ -34,6 +34,8 @@ public class MainViewController implements Initializable{
     @FXML
     private TabPane tabPane;
     @FXML private Label name;
+    @FXML private Label menu;
+    @FXML private Button employeeSearch;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -41,6 +43,13 @@ public class MainViewController implements Initializable{
         showNoticeView();
         String userName = UserSession.getInstance().getUserName();
         name.setText(userName);
+
+        menu.setVisible(false);
+        employeeSearch.setVisible(false);
+        if(UserSession.getInstance().getAdmin()) {
+            menu.setVisible(true);
+            employeeSearch.setVisible(true);
+        }
     }
 
     @FXML
