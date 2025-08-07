@@ -6,9 +6,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
+<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
     <left>
         <VBox spacing="10.0" style="-fx-background-color: #f8f9fa;" BorderPane.alignment="CENTER">
             <padding>
@@ -34,7 +35,7 @@
 
                 <Button fx:id="NoticeViewButton" onAction="#showNoticeView" styleClass="transparent-button" text="• 공지사항" />
                 <Button onAction="#showProductManagement" styleClass="transparent-button" text="• 상품 관리" />
-                <Button styleClass="transparent-button" text="• 계좌 개설 승인" />
+                <Button onAction="#showAccountApprovalView" styleClass="transparent-button" text="• 계좌 개설 승인" />
                 <Button onAction="#showCustomerView" styleClass="transparent-button" text="• 고객 조회" />
                 <Button onAction="#showMypage" styleClass="transparent-button" text="• 마이페이지" />
                 <Button fx:id="ChatButton" onAction="#showChatView" styleClass="transparent-button" text="• 채팅" />
@@ -45,16 +46,25 @@
                     </VBox.margin>
                 </Label>
                 <Button fx:id="employeeSearch" onAction="#showEmployeeCheckView" styleClass="transparent-button" text="• 사원 조회" />
-            <BorderPane prefHeight="121.0" prefWidth="79.0">
-               <bottom>
-                  <Button mnemonicParsing="false" styleClass="transparent-button" text="로그아웃" BorderPane.alignment="CENTER" />
-               </bottom>
-            </BorderPane>
+            <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <HBox alignment="BOTTOM_CENTER">
+                     <children>
+                        <ImageView fitHeight="20" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../icons/logout.png" />
+                           </image>
+                        </ImageView>
+                        <Button fx:id="logoutBtn" mnemonicParsing="false" styleClass="transparent-button" text="로그아웃" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
             </children>
         </VBox>
     </left>
     <center>
-        <VBox BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS" fx:id="contentArea" >
+        <VBox fx:id="contentArea" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
         </VBox>
     </center>
 </BorderPane>
