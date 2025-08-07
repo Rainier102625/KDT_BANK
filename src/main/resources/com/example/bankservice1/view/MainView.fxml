@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
+<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
     <left>
         <VBox spacing="10.0" style="-fx-background-color: #f8f9fa;" BorderPane.alignment="CENTER">
             <padding>
@@ -19,7 +19,7 @@
             <children>
             <HBox prefHeight="34.0" prefWidth="123.0">
                <children>
-                  <StackPane prefHeight="9.0" prefWidth="47.0" fx:id="notificationButtonContainer" onMouseClicked="#handleNotificationClick" style="-fx-cursor: hand;">
+                  <StackPane prefHeight="9.0" prefWidth="47.0" fx:id="notificationButtonContainer"  style="-fx-cursor: hand;">
                     <children>
                         <ImageView fx:id="bellIcon" fitHeight="22" fitWidth="22">
                             <image>
