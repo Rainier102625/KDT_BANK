@@ -70,7 +70,7 @@ public class WebSocketManager {
             }
         };
         // 서버에 연결 시도
-        stompClient.connect(BASE_WS_URL, sessionHandler);
+        stompClient.connect(apiconstants.BASE_WS_URL, sessionHandler);
     }
 
     // 현재 세션 반환
