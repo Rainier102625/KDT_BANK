@@ -86,6 +86,10 @@ public class MainViewController implements Initializable{
             employeeSearch.setVisible(true);
         }
 
+    }
+
+    public void setupAfterLogin() {
+        System.out.println("MainViewController: 로그인 후 설정을 시작합니다.");
         loadInitialUnreadCount();
         subscribeToGlobalNotifications();
     }
@@ -204,6 +208,7 @@ public class MainViewController implements Initializable{
             }
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
+                System.out.println(">>>>>>>>>> [SUCCESS] MESSAGE RECEIVED ON /topic/notify! <<<<<<<<<<");
                 Platform.runLater(() -> {
                     System.out.println("🔔 [MainView] 새로운 실시간 알림 수신!");
                     unreadCount.set(unreadCount.get() + 1);
