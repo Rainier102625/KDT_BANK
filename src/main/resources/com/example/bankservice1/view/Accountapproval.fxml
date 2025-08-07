@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxWidth="700.0" prefHeight="610.0" prefWidth="700.0" style="-fx-background-color: #E7EDF7;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.AccountapprovalController">
+<AnchorPane maxWidth="700.0" prefHeight="610.0" prefWidth="700.0" style="-fx-background-color: #E7EDF7;" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.AccountapprovalController">
     <children>
         <!-- 상단 타이틀 -->
         <VBox layoutX="30" layoutY="30" spacing="5">
@@ -35,12 +35,12 @@
              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
            </rowConstraints>
             <children>
-               <Label text="고객명/계좌번호 입력" />
+               <Label text="고객명 입력" />
                <Label prefHeight="13.0" prefWidth="62.0" text="요청 유형" GridPane.columnIndex="1" />
             </children>
          </GridPane>
             <HBox spacing="15">
-                <TextField promptText="🔍검색어 입력" />
+                <TextField fx:id="SearchName" promptText="🔍검색어 입력" />
                 <ComboBox prefWidth="120" promptText="전체">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
@@ -49,7 +49,7 @@
                         </FXCollections>
                     </items>
                 </ComboBox>
-                <Button text="초기화" />
+                <Button text="검색" style="-fx-background-color:#2563eb; -fx-text-fill: white" />
             </HBox>
         </VBox>
       <VBox layoutX="50.0" layoutY="227.0" maxHeight="355.0" maxWidth="600.0" prefHeight="355.0" prefWidth="600.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
@@ -58,40 +58,11 @@
               <!-- 승인 요청 목록 -->
               <VBox spacing="10">
                   <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="승인 요청 목록" />
+
+                  <VBox fx:id="requestListContainer" spacing="15">
+
       
-                  <!-- 요청 카드 예시 -->
-                  <VBox spacing="15">
-                      <HBox alignment="CENTER" prefWidth="560.0" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 5; -fx-border-color: #eeeeee; -fx-border-image-width: 2; -fx-border-radius: 10;">
-                     <ImageView fitHeight="39.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                           <Image url="@../../../../icons/profile.png" />
-                        </image>
-                     </ImageView>
-                          <VBox spacing="3">
-                              <Label style="-fx-font-size: 12px; -fx-text-fill: #999;" text="고객명" />
-                              <Label style="-fx-font-weight: bold;" text="홍길동" />
-                              <Label text="010-1234-5678" />
-                          </VBox>
-                          <VBox layoutX="300" spacing="3">
-                              <Label style="-fx-font-size: 12px; -fx-text-fill: #999;" text="신청일" />
-                              <Label text="2024-01-30" />
-                              <Label text="계좌: 100230002" />
-                          </VBox>
-                          <VBox spacing="3">
-                              <Label style="-fx-font-size: 12px; -fx-text-fill: #999;" text="계좌 유형" />
-                              <Label text="더 편한 적금" />
-                              <HBox spacing="5">
-                                  <Label style="-fx-background-color: #e0e7ff; -fx-padding: 2 8; -fx-background-radius: 8;" text="생성" />
-                                  <Label style="-fx-background-color: #fceabb; -fx-padding: 2 8; -fx-background-radius: 8;" text="대기중" />
-                              </HBox>
-                          </VBox>
-                          <HBox alignment="CENTER_RIGHT" spacing="10">
-                              <Button style="-fx-background-color: #3bb273; -fx-text-fill: white;" text="승인" />
-                              <Button style="-fx-background-color: #f87171; -fx-text-fill: white;" text="거절" />
-                          </HBox>
-                      </HBox>
-      
-                      <!-- 다른 요청들도 같은 HBox 형식으로 추가 가능 -->
+                      <!-- 요청 카드 들어가는 영역 -->
                   </VBox>
               </VBox>
          </children>

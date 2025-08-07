@@ -66,6 +66,11 @@ public class NoticeViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        createNoticeBtn.setVisible(false);
+        if(UserSession.getInstance().getAdmin()) {
+            createNoticeBtn.setVisible(true);
+        }
+
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(apiconstants.BASE_URL + "/notices"))// 로그인 API 주소

@@ -43,6 +43,11 @@ public class ProductManagementController {
     private final HttpClient httpClient = HttpClient.newHttpClient();
     @FXML
     public void initialize() {
+        state.setVisible(false);
+        if(UserSession.getInstance().getAdmin()) {
+            state.setVisible(true);
+        }
+
         productName.setCellValueFactory(new PropertyValueFactory<>("productName")); //cellvaluefactory는 데이터 값 설정
         type.setCellValueFactory(new PropertyValueFactory<>("type"));
         duration.setCellValueFactory(new PropertyValueFactory<>("duration"));
@@ -74,11 +79,10 @@ public class ProductManagementController {
             {
                 moreButton.setStyle("-fx-background-color: white; -fx-font-size: 12px; -fx-text-fill: black;");
 
-                MenuItem editItem = new MenuItem("수정");
                 MenuItem deleteItem = new MenuItem("삭제");
                 deleteItem.setStyle("-fx-text-fill: red;");
 
-                ContextMenu contextMenu = new ContextMenu(editItem, deleteItem);
+                ContextMenu contextMenu = new ContextMenu(deleteItem);
 
                 deleteItem.setOnAction(event -> {
                     Product selectedProduct = getTableView().getItems().get(getIndex());
@@ -160,6 +164,7 @@ public class ProductManagementController {
                         Platform.runLater(() -> {
                             handleProductSearch(productTable);
                         });
+                        Platform.runLater(() -> showAlert("삭제 완료"));
                     }else{
                         System.out.println("fail");
                     }
@@ -168,6 +173,13 @@ public class ProductManagementController {
                     ex.printStackTrace();
                     return null;
                 });
+    }
+    private void showAlert(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("알림");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 
 }

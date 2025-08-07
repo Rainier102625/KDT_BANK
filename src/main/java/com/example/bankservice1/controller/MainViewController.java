@@ -34,6 +34,8 @@ public class MainViewController implements Initializable{
     @FXML
     private TabPane tabPane;
     @FXML private Label name;
+    @FXML private Label menu;
+    @FXML private Button employeeSearch;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -41,12 +43,30 @@ public class MainViewController implements Initializable{
         showNoticeView();
         String userName = UserSession.getInstance().getUserName();
         name.setText(userName);
+
+        menu.setVisible(false);
+        employeeSearch.setVisible(false);
+        if(UserSession.getInstance().getAdmin()) {
+            menu.setVisible(true);
+            employeeSearch.setVisible(true);
+        }
     }
 
     @FXML
     private void showNoticeView() {
         try {
             Parent noticePage = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/NoticeView.fxml"));
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(noticePage);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "오류", "메인 화면을 불러오는 데 실패했습니다.");
+        }
+    }
+    @FXML
+    private void showAccountApprovalView() {
+        try {
+            Parent noticePage = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/Accountapproval.fxml"));
             contentArea.getChildren().clear();
             contentArea.getChildren().add(noticePage);
         } catch (IOException e) {

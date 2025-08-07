@@ -5,10 +5,7 @@ import com.example.bankservice1.model.Employee;
 import com.example.bankservice1.model.tokenManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URI;
@@ -97,6 +94,7 @@ public class EmployeeEditController {
                     .thenAccept(response -> {
                         if(response.statusCode() == 200){
                             System.out.println("success");
+                            javafx.application.Platform.runLater(()->showAlert("수정 완료"));
                         } else{
                             System.out.println("fail" + response.statusCode());
                             System.out.println(response.body());
@@ -115,5 +113,12 @@ public class EmployeeEditController {
     private void handleCancel(){
         Stage stage =  (Stage) cancel.getScene().getWindow();
         stage.close();
+    }
+    private void showAlert(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("알림");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }

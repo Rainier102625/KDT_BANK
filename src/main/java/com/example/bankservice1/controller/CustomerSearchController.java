@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -35,6 +36,7 @@ public class CustomerSearchController {
     @FXML private TableColumn<Customers,String> customerName;
     @FXML private TableColumn<Customers,String> customerPhone;
     @FXML private TableColumn<Customers,String> customerBirth;
+    @FXML private Button Search;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -46,6 +48,7 @@ public class CustomerSearchController {
         customerBirth.setCellValueFactory(new PropertyValueFactory<>("customerBirth"));
 
         handleSearchCustomer(customerTable);
+        Search.setOnAction(event -> handleSearchCustomer(customerTable));
 
         customerTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && !customerTable.getSelectionModel().isEmpty()) {
