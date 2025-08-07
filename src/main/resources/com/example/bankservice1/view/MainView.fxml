@@ -28,7 +28,7 @@
                         </ImageView>
                         <Label fx:id="unreadCountBadge"
                                style="-fx-background-color: black; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 10px; -fx-padding: 1px 5px;"
-                               text="0" StackPane.alignment="TOP_RIGHT" translateX="0" translateY="3"/>
+                                StackPane.alignment="TOP_RIGHT" translateX="0" translateY="3"/>
                     </children>
                   </StackPane>
 
