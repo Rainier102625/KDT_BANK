@@ -41,7 +41,7 @@
          </GridPane>
             <HBox spacing="15">
                 <TextField fx:id="SearchName" promptText="🔍검색어 입력" />
-                <ComboBox prefWidth="120" promptText="전체">
+                <ComboBox fx:id="accountRequest" prefWidth="120" promptText="전체">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="생성" />
