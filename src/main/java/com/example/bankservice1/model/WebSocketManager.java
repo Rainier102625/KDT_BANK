@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.*;
+import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -28,6 +29,8 @@ public class WebSocketManager {
     // 1. 싱글톤 인스턴스 생성
     private static final WebSocketManager instance = new WebSocketManager();
 
+    WebSocketHttpHeaders handshakeHeaders = new WebSocketHttpHeaders();
+
     private WebSocketStompClient stompClient;
     private StompSession stompSession;
 
@@ -45,6 +48,9 @@ public class WebSocketManager {
     }
 
     public void connect(final Runnable onConnected) {
+        StompHeaders stompHeaders = new StompHeaders();
+        // "Authorization" 헤더에 JWT 토큰을 담습니다.
+        stompHeaders.add("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken());
         StompSessionHandlerAdapter sessionHandler = new StompSessionHandlerAdapter() {
             @Override
             public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
@@ -70,7 +76,7 @@ public class WebSocketManager {
             }
         };
         // 서버에 연결 시도
-        stompClient.connect(apiconstants.BASE_WS_URL, sessionHandler);
+        stompClient.connect(apiconstants.BASE_WS_URL, handshakeHeaders, stompHeaders, sessionHandler);
     }
 
     // 현재 세션 반환
