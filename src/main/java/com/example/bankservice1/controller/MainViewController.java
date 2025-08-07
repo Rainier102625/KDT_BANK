@@ -222,6 +222,7 @@ public class MainViewController implements Initializable{
 
     public void Logout(){
         tokenManager.getInstance().clearSession();
+        UserSession.getInstance().clearLogin();
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/login.fxml"));
             Parent root = loader.load();

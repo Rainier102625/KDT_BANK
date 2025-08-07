@@ -2,14 +2,14 @@ package com.example.bankservice1.model;
 
 public class ChatRoom {
 
-    private int chatIndex;
+    private long chatIndex;
     private String chatName;
 
-    public int getChatIndex() {
+    public long getChatIndex() {
         return chatIndex;
     }
 
-    public void setChatIndex(int chatIndex) {
+    public void setChatIndex(long chatIndex) {
         this.chatIndex = chatIndex;
     }
 
@@ -23,7 +23,7 @@ public class ChatRoom {
 
     public ChatRoom() {}
 
-    public ChatRoom(int chatIndex, String chatName) {
+    public ChatRoom(long chatIndex, String chatName) {
         this.chatIndex = chatIndex;
         this.chatName = chatName;
     }

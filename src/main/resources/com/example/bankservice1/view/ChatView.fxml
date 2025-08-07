@@ -81,7 +81,7 @@
             <center>
                 <StackPane style="-fx-background-color: #E7EDF7;">
                     <Label fx:id="chatmain" style="-fx-text-alignment: center; -fx-font-size: 14px; -fx-text-fill: #888888;" text="채팅을 선택해주세요&#10;채팅방을 선택하여 대화에 참여해주세요" />
-                    <BorderPane fx:id="chatWindow" managed="false" visible="false">
+                    <BorderPane fx:id="chatWindow" managed="false" visible="false" maxWidth="1.7976931348623157E308" maxHeight="1.7976931348623157E308">
                         <top>
                             <Label fx:id="chatRoomTitle" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #E7EDF7; -fx-padding: 12;" text="채팅방 제목" />
                         </top>
