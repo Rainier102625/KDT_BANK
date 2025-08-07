@@ -95,6 +95,7 @@ public class loginController {
                                 showAlert(Alert.AlertType.INFORMATION, "성공", "로그인에 성공했습니다.");
 
                                 System.out.println("📡 웹소켓 연결을 시작합니다...");
+
                                 WebSocketManager.getInstance().connect(() -> {
                                     // 3. 웹소켓 연결 성공 후 실행될 코드
                                     System.out.println("🚀 웹소켓 준비 완료. 알림 구독 및 화면 전환을 시작합니다.");
