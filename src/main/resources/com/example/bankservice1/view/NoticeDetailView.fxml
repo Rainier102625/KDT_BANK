@@ -2,13 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.MenuButton?>
 
-<VBox prefHeight="362.0" prefWidth="400.0" spacing="10.0" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.NoticeDetailController">
+<VBox prefHeight="362.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #E7EDF7;" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.NoticeDetailController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -19,7 +19,7 @@
                <children>
                   <VBox prefHeight="45.0" prefWidth="312.0">
                      <children>
-                        <TextField fx:id="titleTextField"/>
+                        <TextField fx:id="titleTextField" />
                         <Label fx:id="dateLabel" prefHeight="24.0" prefWidth="318.0" text="Label" />
                      </children>
                   </VBox>

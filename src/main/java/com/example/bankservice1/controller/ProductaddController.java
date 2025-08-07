@@ -4,7 +4,9 @@ import com.example.bankservice1.constants.apiconstants;
 import com.example.bankservice1.model.UserSession;
 import com.example.bankservice1.model.tokenManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -62,7 +64,10 @@ public class ProductaddController {
                         .thenAccept(response -> {
                             if (response.statusCode() == 200) {
                                 System.out.println("success");
-                            } else {
+                            }else if (response.statusCode() == 400){
+                                Platform.runLater(() -> showAlert("이미 존재하는 상품 이름입니다"));
+                            }
+                            else {
                                 System.out.println("fail" + response.statusCode());
                             }
                         })
@@ -74,5 +79,12 @@ public class ProductaddController {
                 e.printStackTrace();
             }
         }
+    }
+    private void showAlert(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("알림");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }
