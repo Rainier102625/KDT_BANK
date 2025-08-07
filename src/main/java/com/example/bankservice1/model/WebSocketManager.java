@@ -12,6 +12,16 @@ import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.Transport;
+import org.springframework.web.socket.sockjs.client.WebSocketTransport;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.application.Platform;
+
+import static com.example.bankservice1.constants.apiconstants.*;
 
 public class WebSocketManager {
 
@@ -23,13 +33,10 @@ public class WebSocketManager {
 
     // 2. private 생성자로 외부에서 new 키워드로 생성하는 것을 막음
     private WebSocketManager() {
-        WebSocketClient client = new StandardWebSocketClient();
-        this.stompClient = new WebSocketStompClient(client);
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        converter.setObjectMapper(objectMapper);
-        this.stompClient.setMessageConverter(converter);
+        List<Transport> transports = new ArrayList<>(1);
+        transports.add(new WebSocketTransport(new StandardWebSocketClient()));
+        this.stompClient = new WebSocketStompClient(new SockJsClient(transports));
+        this.stompClient.setMessageConverter(new MappingJackson2MessageConverter());
     }
 
     // 3. 외부에서 인스턴스를 얻을 수 있는 public static 메서드 제공
@@ -37,71 +44,44 @@ public class WebSocketManager {
         return instance;
     }
 
-    // 4. 연결 메서드
-    public void connect(String token, Long currentUserIndex) {
-        if (stompSession != null && stompSession.isConnected()) {
-            System.out.println("이미 연결되어 있습니다.");
-            return;
-        }
+    public void connect(final Runnable onConnected) {
+        StompSessionHandlerAdapter sessionHandler = new StompSessionHandlerAdapter() {
+            @Override
+            public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+                System.out.println("✅ 웹소켓 연결 성공! Session ID: " + session.getSessionId());
+                stompSession = session; // 연결된 세션을 저장
 
-        StompHeaders connectHeaders = new StompHeaders();
-        connectHeaders.add("Authorization", "Bearer " + token);
+                // 연결 성공 후 실행할 작업을 UI 스레드에서 실행
+                Platform.runLater(onConnected);
+            }
 
-        try {
-            stompClient.connectAsync(apiconstants.BASE_WS_URL, (StompSessionHandler) connectHeaders, new StompSessionHandlerAdapter() {
-                @Override
-                public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-                    stompSession = session;
-                    System.out.println("전역 WebSocket 연결 성공!");
+            @Override
+            public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
+                System.err.println("🚨 웹소켓 통신 중 예외 발생: " + exception.getMessage());
+                // 실제 운영 코드에서는 로그를 남기거나, UI에 연결 오류를 알리는 등의 처리를 할 수 있습니다.
+                exception.printStackTrace();
+            }
 
-                    // ** 중요: 개인 알림 채널 구독 **
-                    // 이 부분은 서버와 약속이 필요합니다.
-                    // 예를 들어 /topic/user/{userIndex}/notify 와 같은 주소입니다.
-                    session.subscribe("/topic/user/" + currentUserIndex + "/notify", new StompFrameHandler() {
-                        @Override
-                        public java.lang.reflect.Type getPayloadType(StompHeaders headers) {
-                            // 서버에서 보내주는 알림 DTO 클래스로 변경해야 함
-                            return String.class; // 예: "새 메시지가 도착했습니다"
-                        }
-                        @Override
-                        public void handleFrame(StompHeaders headers, Object payload) {
-                            // 여기에 알림 로직 구현
-                            Platform.runLater(() -> {
-                                System.out.println("새로운 알림: " + payload);
-                                // 예: 메인 뷰의 채팅 아이콘에 빨간 점 표시
-                                new Alert(Alert.AlertType.INFORMATION, "새로운 메시지 알림: " + payload).show();
-                            });
-                        }
-                    });
-                }
-                @Override
-                public void handleTransportError(StompSession session, Throwable exception) {
-                    System.err.println("전역 WebSocket 연결 오류: " + exception.getMessage());
-                }
-            });
-        } catch (Exception e) {
-            System.err.println("전역 WebSocket 연결 실패: " + e.getMessage());
-        }
+            @Override
+            public void handleTransportError(StompSession session, Throwable exception) {
+                System.err.println("🚨 웹소켓 연결 자체에 오류 발생: " + exception.getMessage());
+                // 네트워크 문제 등으로 연결이 끊겼을 때 호출됩니다.
+                // 여기서 재연결 로직을 구현할 수 있습니다.
+            }
+        };
+        // 서버에 연결 시도
+        stompClient.connect(BASE_WS_URL, sessionHandler);
     }
 
-    // 5. 채팅방 구독/구독취소/메시지전송 메서드
-    public StompSession.Subscription subscribeToChatRoom(Long chatIndex, StompFrameHandler frameHandler) {
-        if (stompSession == null || !stompSession.isConnected()) return null;
-        return stompSession.subscribe("/topic/chat/" + chatIndex, frameHandler);
+    // 현재 세션 반환
+    public StompSession getSession() {
+        return this.stompSession;
     }
 
-    public void sendMessage(SendMessageRequest message) {
-        if (stompSession == null || !stompSession.isConnected()) return;
-        stompSession.send("/app/chat.sendMessage", message);
-    }
-
+    // 연결 해제
     public void disconnect() {
         if (stompSession != null && stompSession.isConnected()) {
             stompSession.disconnect();
         }
-    }
-
-    public boolean isConnected() {
-        return stompSession != null && stompSession.isConnected();
     }
 }

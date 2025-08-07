@@ -17,13 +17,6 @@ public class Main extends Application {
 
             Parent root = FXMLLoader.load(getClass().getResource("/com/example/bankservice1/view/login.fxml"));
 
-//        // FXML 파일을 로드
-//        Parent root = FXMLLoader.load(getClass().getResource("NoticeView.fxml"));
-//        // Stage(윈도우) 설정
-//        primaryStage.setTitle("공지사항 관리 시스템");
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
-
             // Scene 생성
             Scene scene = new Scene(root, 800, 600);
 
