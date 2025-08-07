@@ -197,6 +197,10 @@ public class ChatViewController {
 
             messageInput.clear();
         });
+
+        messageInput.setOnAction(e -> {
+            sendButton.fire();
+        });
     }
 
     public void openChatRoom(ChatRoom room) {
@@ -265,38 +269,6 @@ public class ChatViewController {
 
         messageBox.getChildren().add(bubble);
         chatMessageContainer.getChildren().add(messageBox);
-    }
-
-    private void connectWebSocket() {
-        String token = tokenManager.getInstance().getJwtToken();
-        if (token == null || token.isEmpty()) {
-            System.err.println("JWT 토큰이 없어 WebSocket에 연결할 수 없습니다.");
-            return;
-        }
-
-        String URL = "ws://localhost:8080/ws?token=" + token;
-
-        WebSocketClient client = new StandardWebSocketClient();
-        this.stompClient = new WebSocketStompClient(client);
-        this.stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompHeaders connectHeaders = new StompHeaders();
-        connectHeaders.add("Authorization", "Bearer " + token); // Bearer 접두사 추가
-//
-//        try {
-//            this.stompSession = stompClient.connect(URL, connectHeaders, new StompSessionHandlerAdapter() {
-//                @Override
-//                public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-//                    Platform.runLater(() -> System.out.println("WebSocket 연결 성공. 채팅방을 선택하세요."));
-//                }
-//                @Override
-//                public void handleTransportError(StompSession session, Throwable exception) {
-//                    Platform.runLater(() -> System.err.println("WebSocket 연결 오류: " + exception.getMessage()));
-//                }
-//            }).get(); // .get()을 통해 연결이 완료될 때까지 기다림 (실제 앱에서는 비동기 처리 고려)
-//        } catch (Exception e) {
-//            Platform.runLater(() -> System.err.println("WebSocket 연결 실패: " + e.getMessage()));
-//        }
     }
 
     @FXML
