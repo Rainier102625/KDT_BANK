@@ -7,6 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
@@ -16,6 +17,23 @@
                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
             </padding>
             <children>
+            <HBox prefHeight="34.0" prefWidth="123.0">
+               <children>
+                  <StackPane prefHeight="9.0" prefWidth="47.0" fx:id="notificationButtonContainer" onMouseClicked="#handleNotificationClick" style="-fx-cursor: hand;">
+                    <children>
+                        <ImageView fx:id="bellIcon" fitHeight="22" fitWidth="22">
+                            <image>
+                                <Image url="@../../../../icons/bellIcon.png" />
+                            </image>
+                        </ImageView>
+                        <Label fx:id="unreadCountBadge"
+                               style="-fx-background-color: black; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 10px; -fx-padding: 1px 5px;"
+                               text="0" StackPane.alignment="TOP_RIGHT" translateX="0" translateY="3"/>
+                    </children>
+                  </StackPane>
+
+               </children>
+            </HBox>
             <VBox prefHeight="112.0" prefWidth="123.0">
                <children>
                   <BorderPane prefHeight="200.0" prefWidth="200.0">
