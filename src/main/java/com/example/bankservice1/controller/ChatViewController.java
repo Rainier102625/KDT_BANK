@@ -67,6 +67,10 @@ public class ChatViewController {
     private ObservableList<ChatRoom> chatObservableList;
     private List<ChatRoom> ChatRoomList = new ArrayList<>();
 
+    @FXML private ListView<ChatMessageResponse> messageListView;
+    private ObservableList<ChatMessageResponse> messageObservableList;
+    private List<ChatMessageResponse> messageList = new ArrayList<>();
+
     private WebSocketStompClient stompClient;
     private StompSession stompSession;
     private StompSession.Subscription currentSubscription; // 현재 구독 정보를 저장하기 위함
