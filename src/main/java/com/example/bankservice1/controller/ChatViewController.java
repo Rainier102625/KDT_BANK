@@ -1,10 +1,7 @@
 package com.example.bankservice1.controller;
 
 import com.example.bankservice1.constants.apiconstants;
-import com.example.bankservice1.model.ChatRoom;
-import com.example.bankservice1.model.Friend;
-import com.example.bankservice1.model.User;
-import com.example.bankservice1.model.tokenManager;
+import com.example.bankservice1.model.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -30,6 +27,12 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.*;
+import org.springframework.web.socket.client.WebSocketClient;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ChatViewController {
 
@@ -64,6 +67,13 @@ public class ChatViewController {
     private ObservableList<ChatRoom> chatObservableList;
     private List<ChatRoom> ChatRoomList = new ArrayList<>();
 
+    private WebSocketStompClient stompClient;
+    private StompSession stompSession;
+    private StompSession.Subscription currentSubscription; // 현재 구독 정보를 저장하기 위함
+    private Long currentChatIndex; // 현재 접속한 채팅방의 인덱스
+    private Long currentUserIndex = UserSession.getInstance().getUserIndex();
+
+
     public ChatViewController() {}
 
     public List<Friend> getfriendsListset(){
@@ -79,6 +89,8 @@ public class ChatViewController {
         chatList.setVisible(false);
         chatList.setManaged(false);
 
+//        connectWebSocket();
+
         friendbtn.setOnAction(e -> {
             friendList.setVisible(true);
             friendList.setManaged(true);
@@ -92,7 +104,9 @@ public class ChatViewController {
             chatList.setManaged(true);
         });
         createGroupbtn.setOnAction(e -> {
+
         try {
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/createchat.fxml"));
             Parent root = loader.load();
 
@@ -111,6 +125,7 @@ public class ChatViewController {
         }
         });
         inviteButton.setOnAction(e -> {
+
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friendinvite.fxml"));
                 Parent root = loader.load();
@@ -130,6 +145,7 @@ public class ChatViewController {
             }
         });
         addUserButton.setOnAction(e -> {
+
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friendadd.fxml"));
                 Parent root = loader.load();
@@ -149,7 +165,6 @@ public class ChatViewController {
             friendPanel.setVisible(!isVisible);
             friendPanel.setManaged(!isVisible);
         });
-
 
         chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -201,6 +216,38 @@ public class ChatViewController {
         chatMessageContainer.getChildren().add(messageBox);
     }
 
+    private void connectWebSocket() {
+        String token = tokenManager.getInstance().getJwtToken();
+        if (token == null || token.isEmpty()) {
+            System.err.println("JWT 토큰이 없어 WebSocket에 연결할 수 없습니다.");
+            return;
+        }
+
+        String URL = "ws://localhost:8080/ws?token=" + token;
+
+        WebSocketClient client = new StandardWebSocketClient();
+        this.stompClient = new WebSocketStompClient(client);
+        this.stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+        StompHeaders connectHeaders = new StompHeaders();
+        connectHeaders.add("Authorization", "Bearer " + token); // Bearer 접두사 추가
+//
+//        try {
+//            this.stompSession = stompClient.connect(URL, connectHeaders, new StompSessionHandlerAdapter() {
+//                @Override
+//                public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+//                    Platform.runLater(() -> System.out.println("WebSocket 연결 성공. 채팅방을 선택하세요."));
+//                }
+//                @Override
+//                public void handleTransportError(StompSession session, Throwable exception) {
+//                    Platform.runLater(() -> System.err.println("WebSocket 연결 오류: " + exception.getMessage()));
+//                }
+//            }).get(); // .get()을 통해 연결이 완료될 때까지 기다림 (실제 앱에서는 비동기 처리 고려)
+//        } catch (Exception e) {
+//            Platform.runLater(() -> System.err.println("WebSocket 연결 실패: " + e.getMessage()));
+//        }
+    }
+
     @FXML
     private void FriendListSet(){
 
@@ -222,11 +269,12 @@ public class ChatViewController {
                     // json 객체 리스트를 바로 friend 리스트에 저장
                     friendsListset = objectMapper.readValue(responseBody, new TypeReference<List<Friend>>() {});
                     friendObservableList.setAll(friendsListset);
+
                 } catch (Exception ex) {
                     ex.printStackTrace(); //예외 발생 위치, 호출 경로 출력
                 }
                 } else{
-                System.out.println("서버 오류" + response.statusCode());
+                    System.out.println("서버 오류" + response.statusCode());
                 }
             })
             .exceptionally(ex -> {

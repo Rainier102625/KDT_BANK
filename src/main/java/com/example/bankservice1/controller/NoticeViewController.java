@@ -243,11 +243,13 @@ public class NoticeViewController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/NoticeCreateView.fxml"));
                 Parent root = loader.load();
 
-
                 // 3. 새로운 창(Stage) 생성
                 Stage popupStage = new Stage();
                 popupStage.setTitle("공지사항 상세 정보");
                 popupStage.setScene(new Scene(root));
+
+                popupStage.show();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
