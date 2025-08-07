@@ -113,7 +113,7 @@ public class MainViewController implements Initializable{
     }
 
     @FXML
-    public void createNotice(){
+    public void Logout(){
 
     }
 

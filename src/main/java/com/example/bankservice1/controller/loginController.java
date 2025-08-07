@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.util.Objects;
 
 import com.example.bankservice1.model.*;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
 
 public class loginController {
     @FXML
@@ -90,6 +93,17 @@ public class loginController {
                                 UserSession.getInstance().setUserIndex(userIndex);
                                 System.out.println("로그인 성공: " + responseBody);
                                 showAlert(Alert.AlertType.INFORMATION, "성공", "로그인에 성공했습니다.");
+
+                                System.out.println("📡 웹소켓 연결을 시작합니다...");
+                                WebSocketManager.getInstance().connect(() -> {
+                                    // 3. 웹소켓 연결 성공 후 실행될 코드
+                                    System.out.println("🚀 웹소켓 준비 완료. 알림 구독 및 화면 전환을 시작합니다.");
+
+                                    // 알림 채널 구독
+                                    subscribeToNotifications();
+                                });
+
+                                showAlert(Alert.AlertType.INFORMATION, "성공", "로그인에 성공했습니다.");
                                 // 여기서 화면 전환 로직 호출
                                 loadMainView();
                             }
@@ -109,6 +123,34 @@ public class loginController {
             showAlert(Alert.AlertType.ERROR, "오류", "로그인 요청 중 오류가 발생했습니다.");
         }
     }
+
+    private void subscribeToNotifications(){
+        StompSession session = WebSocketManager.getInstance().getSession();
+        if (session == null || !session.isConnected()) {
+            System.err.println("알림을 구독할 수 없습니다. 웹소켓이 연결되지 않았습니다.");
+            return;
+        }
+
+        // "/topic/notify" 채널 구독
+        session.subscribe("/topic/notify", new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                // 서버가 보내주는 알림 데이터 형태에 맞는 DTO 클래스를 지정해야 합니다.
+                // 예시: return NotificationPayload.class;
+                return Object.class; // 우선 Object로 받고 나중에 파싱해도 됩니다.
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                System.out.println("🔔 새로운 알림 수신: " + payload.toString());
+                // NotificationPayload noti = (NotificationPayload) payload;
+                // Platform.runLater(() -> showNotification(noti));
+            }
+        });
+
+        System.out.println("📢 '/topic/notify' 알림 채널 구독 완료.");
+    }
+
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
