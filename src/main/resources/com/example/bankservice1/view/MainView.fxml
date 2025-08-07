@@ -19,7 +19,7 @@
             <children>
             <HBox prefHeight="34.0" prefWidth="123.0">
                <children>
-                  <StackPane prefHeight="9.0" prefWidth="47.0" fx:id="notificationButtonContainer" onMouseClicked="#handleNotificationClick" style="-fx-cursor: hand;">
+                  <StackPane prefHeight="9.0" prefWidth="47.0" fx:id="notificationButtonContainer"  style="-fx-cursor: hand;">
                     <children>
                         <ImageView fx:id="bellIcon" fitHeight="22" fitWidth="22">
                             <image>
@@ -28,7 +28,7 @@
                         </ImageView>
                         <Label fx:id="unreadCountBadge"
                                style="-fx-background-color: black; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 10px; -fx-padding: 1px 5px;"
-                               text="0" StackPane.alignment="TOP_RIGHT" translateX="0" translateY="3"/>
+                                StackPane.alignment="TOP_RIGHT" translateX="0" translateY="3"/>
                     </children>
                   </StackPane>
 

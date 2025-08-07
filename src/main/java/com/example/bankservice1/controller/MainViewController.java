@@ -12,19 +12,26 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
+import com.example.bankservice1.model.*;
+
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class MainViewController implements Initializable{
 
@@ -80,6 +87,7 @@ public class MainViewController implements Initializable{
         }
 
         loadInitialUnreadCount();
+        subscribeToGlobalNotifications();
     }
 
     @FXML
@@ -183,6 +191,28 @@ public class MainViewController implements Initializable{
         }
     }
 
+    private void subscribeToGlobalNotifications() {
+        StompSession session = WebSocketManager.getInstance().getSession();
+        if (session == null || !session.isConnected()) {
+            System.err.println("알림을 구독할 수 없습니다. 웹소켓이 연결되지 않았습니다.");
+            return;
+        }
+        session.subscribe("/topic/notify", new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return NotificationPayload.class;
+            }
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                Platform.runLater(() -> {
+                    System.out.println("🔔 [MainView] 새로운 실시간 알림 수신!");
+                    unreadCount.set(unreadCount.get() + 1);
+                });
+            }
+        });
+        System.out.println("📢 [MainView] '/topic/notify' 알림 채널 구독 완료.");
+    }
+
     @FXML
 
     public void Logout(){
@@ -206,7 +236,6 @@ public class MainViewController implements Initializable{
     }
 
     private void loadInitialUnreadCount() {
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiconstants.BASE_URL + "/notifications/unread-count?userId=" + UserSession.getInstance().getUserIndex()))
                 .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
@@ -225,6 +254,8 @@ public class MainViewController implements Initializable{
                                 Gson gson = new Gson();
 
                                 UnreadCount URC = gson.fromJson(responseBody, UnreadCount.class);
+
+                                System.out.println(URC);
 
                                 long initialCount = URC.getPRODUCT() + URC.getCHAT() + URC.getNOTICE();
 
@@ -246,9 +277,6 @@ public class MainViewController implements Initializable{
                     });
                 });
     }
-
-
-
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
