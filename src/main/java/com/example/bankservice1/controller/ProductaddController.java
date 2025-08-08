@@ -64,11 +64,13 @@ public class ProductaddController {
                         .thenAccept(response -> {
                             if (response.statusCode() == 200) {
                                 System.out.println("success");
+                                Platform.runLater(() -> showAlert("상품 추가 완료"));
                             }else if (response.statusCode() == 400){
                                 Platform.runLater(() -> showAlert("이미 존재하는 상품 이름입니다"));
                             }
                             else {
                                 System.out.println("fail" + response.statusCode());
+                                Platform.runLater(() -> showAlert("상품 추가 실패"));
                             }
                         })
                         .exceptionally(ex -> {
