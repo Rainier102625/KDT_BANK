@@ -77,12 +77,9 @@ public class ChatViewController {
     private Long currentChatIndex; // 현재 접속한 채팅방의 인덱스
     private Long currentUserIndex = UserSession.getInstance().getUserIndex();
 
+    @FXML private ScrollPane chatScrollPane;
 
     public ChatViewController() {}
-
-    public List<Friend> getfriendsListset(){
-        return this.friendsListset;
-    }
 
     @FXML
     public void initialize() {
@@ -191,8 +188,11 @@ public class ChatViewController {
             ChatMessagePayload payload = new ChatMessagePayload(currentChatIndex, currentUserIndex, content);
             WebSocketManager.getInstance().getSession().send("/app/chat.sendMessage", payload);
 
+            messageInput.clear();
+
             // ✅ 2. 내가 보낸 메시지를 즉시 내 화면에 표시 (기존 로직)
 //            addMessage(content, true);
+
         });
 
         messageInput.setOnAction(e -> {
@@ -300,6 +300,10 @@ public class ChatViewController {
         // HBox에 약간의 여백을 주어 위아래 다른 말풍선과 간격을 줍니다.
         messageBox.setPadding(new Insets(5, 10, 5, 10));
         chatMessageContainer.getChildren().add(messageBox);
+
+        Platform.runLater(() -> {
+            chatScrollPane.setVvalue(1.0);
+        });
     }
 
     private void loadChatHistory(long chatRoomId) {
