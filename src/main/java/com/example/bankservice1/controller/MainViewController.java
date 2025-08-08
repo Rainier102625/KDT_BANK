@@ -63,18 +63,18 @@ public class MainViewController implements Initializable{
 
     @FXML private StackPane rootStackPane;
 
-    @FXML private ListView<NotificationSet> notificationListView;
-    private final ObservableList<NotificationSet> notificationList = FXCollections.observableArrayList();
-
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     private final LongProperty unreadCount = new SimpleLongProperty(0);
 
-    private Node notificationPanel;
-    private boolean isNotificationPanelVisible = false;// 로드된 알림창을 저장할 변수
+    @FXML private Stage notificationStage;
 
-    Stage notificationStage;
+    private StompSession.Subscription globalNotificationSubscription;
+
+    @FXML private ListView<NotificationSet> notificationListView;
+    private final ObservableList<NotificationSet> notificationList = FXCollections.observableArrayList();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -103,6 +103,35 @@ public class MainViewController implements Initializable{
             account.setVisible(true);
         }
     }
+
+    private void setupNotificationCellFactory() {
+        notificationListView.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(NotificationSet item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    VBox vbox = new VBox(5);
+                    Label contentLabel = new Label();
+                    Label timestampLabel = new Label();
+                    contentLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+                    timestampLabel.setStyle("-fx-text-fill: #888888;");
+                    vbox.getChildren().addAll(contentLabel, timestampLabel);
+                    contentLabel.setText(item.getMessage());
+
+                    String originalDateTime = String.valueOf(item.getCreatedAt());
+                    if (originalDateTime != null && originalDateTime.length() >= 16) {
+                        String simplifiedDateTime = originalDateTime.replace('T', ' ').substring(0, 16);
+                        timestampLabel.setText(simplifiedDateTime);
+                    }
+                    setGraphic(vbox);
+                }
+            }
+        });
+    }
+
+
     /**
      * 🔔 종 아이콘 컨테이너 클릭 이벤트 핸들러
      */
@@ -139,14 +168,16 @@ public class MainViewController implements Initializable{
 
                 httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                         .thenAccept(response -> {
-                            if (response.statusCode() == 200) {
-                                System.err.println("지우기 성공: " + response.statusCode());
-                            } else {
-                                System.err.println("지우기 실패: " + response.statusCode());
-                            }
-                        });
+                            Platform.runLater(() -> {
+                                if (response.statusCode() == 200) {
+                                    System.out.println("지우기 성공: " + response.statusCode());
+                                    unreadCount.set(0);
 
-                unreadCount.set(0);
+                                } else {
+                                    System.out.println("지우기 실패: " + response.statusCode());
+                                }
+                            });
+                        });
             });
 
 
@@ -155,48 +186,6 @@ public class MainViewController implements Initializable{
             e.printStackTrace();
         }
     }
-    /**
-     * 서버에서 알림 목록 데이터를 불러오는 메소드
-     */
-
-
-    /**
-     * ListView의 각 셀 모양을 커스텀으로 설정하는 메소드
-     */
-    private void setupNotificationCellFactory() {
-        notificationListView.setCellFactory(param -> new ListCell<NotificationSet>() {
-            private final VBox vbox = new VBox(5);
-            private final Label typeLabel = new Label();
-            private final Label contentLabel = new Label();
-            private final Label timestampLabel = new Label();
-
-            {
-                contentLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
-                timestampLabel.setStyle("-fx-text-fill: #888888;");
-                vbox.getChildren().addAll(contentLabel, timestampLabel);
-            }
-
-            @Override
-            protected void updateItem(NotificationSet item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    typeLabel.setText(item.getType());
-                    contentLabel.setText(item.getMessage());
-
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                    String formattedDateTime = item.getCreatedAt().format(formatter);
-
-                    timestampLabel.setText(formattedDateTime);
-                    setGraphic(vbox);
-                }
-            }
-        });
-    }
-
-
-
     public void setupAfterLogin() {
         System.out.println("MainViewController: 로그인 후 설정을 시작합니다.");
         loadInitialUnreadCount();
@@ -304,15 +293,17 @@ public class MainViewController implements Initializable{
         }
     }
 
-
-
     private void subscribeToGlobalNotifications() {
+        if (globalNotificationSubscription != null) {
+            globalNotificationSubscription.unsubscribe();
+            System.out.println("📢 [MainView] 기존 글로벌 알림 구독을 해지합니다.");
+        }
         StompSession session = WebSocketManager.getInstance().getSession();
         if (session == null || !session.isConnected()) {
             System.err.println("알림을 구독할 수 없습니다. 웹소켓이 연결되지 않았습니다.");
             return;
         }
-        session.subscribe("/topic/notify", new StompFrameHandler() {
+        session.subscribe("/topic/notify/"+UserSession.getInstance().getUserIndex(), new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
                 return NotificationPayload.class;
@@ -394,7 +385,6 @@ public class MainViewController implements Initializable{
                     });
                 });
     }
-
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
