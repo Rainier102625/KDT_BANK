@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.bankservice1.controller.NotificationPanelController"
+      prefHeight="400.0" prefWidth="300.0"
+      style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);"
+      spacing="5">
+
+    <ListView fx:id="notificationListView" VBox.vgrow="ALWAYS" />
+
+</VBox>
