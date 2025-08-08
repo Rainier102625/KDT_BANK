@@ -32,8 +32,9 @@ javafx {
     version = "21"
     modules = listOf("javafx.controls", "javafx.fxml", "javafx.web", "javafx.swing", "javafx.media")
 }
-val springVersion = "6.1.10"  // Spring Framework 6.1.x 최신 버전
-val tomcatVersion = "10.1.25" // Tomcat 10.1.x 최신 버전
+
+val springVersion = "6.1.10"
+val tomcatVersion = "10.1.25"
 val jacksonVersion = "2.17.1"
 
 dependencies {
@@ -56,6 +57,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    implementation("com.google.code.gson:gson:2.9.0")
 
     implementation("org.springframework:spring-websocket:${springVersion}")
     implementation("org.springframework:spring-messaging:${springVersion}")

@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -64,8 +65,7 @@ public class ChatViewController {
 
     // 채팅방 리스트
     @FXML private ListView<ChatRoom> chatListView;
-    private ObservableList<ChatRoom> chatObservableList;
-    private List<ChatRoom> ChatRoomList = new ArrayList<>();
+    private ObservableList<ChatRoom> chatObservableList = FXCollections.observableArrayList();
 
     @FXML private ListView<ChatMessageResponse> messageListView;
     private ObservableList<ChatMessageResponse> messageObservableList;
@@ -86,6 +86,8 @@ public class ChatViewController {
 
     @FXML
     public void initialize() {
+        chatListView.setItems(chatObservableList);
+
         FriendListSet();
         ChatListSet();
         friendList.setVisible(true);
@@ -170,34 +172,83 @@ public class ChatViewController {
             friendPanel.setManaged(!isVisible);
         });
 
-        chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                openChatRoom(String.valueOf(newVal));
+        chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newSelection) -> {
+            if (newSelection != null) {
+                chatmain.setVisible(false);
+                chatWindow.setVisible(true);
+                chatWindow.setManaged(true);
+                openChatRoom(newSelection);
             } //채팅방 클릭시 openchatroom
         });
 
         // 메시지 전송 버튼
         sendButton.setOnAction(e -> {
-            String text = messageInput.getText().trim();
-            if (!text.isEmpty()) {
-                addMessage(text, true);
-                messageInput.clear();
+            String content = messageInput.getText().trim();
+            if (content.isEmpty() || currentChatIndex == null) {
+                return; // 내용이 없거나, 들어간 채팅방이 없으면 전송 안 함
             }
+
+            // ✅ 1. 서버로 메시지를 전송하는 로직 추가
+            ChatMessagePayload payload = new ChatMessagePayload(currentChatIndex, currentUserIndex, content);
+            WebSocketManager.getInstance().getSession().send("/app/chat.sendMessage", payload);
+
+            // ✅ 2. 내가 보낸 메시지를 즉시 내 화면에 표시 (기존 로직)
+//            addMessage(content, true);
+
+            messageInput.clear();
+        });
+
+        messageInput.setOnAction(e -> {
+            sendButton.fire();
         });
     }
 
-    public void openChatRoom(String roomName) {
-        // 안내 문구 숨기고 채팅창 보이게
+    public void openChatRoom(ChatRoom room) {
+        if (currentSubscription != null) {
+            currentSubscription.unsubscribe();
+            System.out.println("이전 채팅방(" + currentChatIndex + ") 구독을 해지합니다.");
+        }
+
+        // 2. 현재 채팅방 정보를 갱신합니다.
+        this.currentChatIndex = room.getChatIndex(); // ChatRoom 객체에서 ID를 가져옵니다.
+
+        // 3. UI를 업데이트합니다.
         chatmain.setVisible(false);
-        chatmain.setManaged(false);
         chatWindow.setVisible(true);
-        chatWindow.setManaged(true);
+        chatRoomTitle.setText(room.getChatName()); // ChatRoom 객체에서 이름을 가져옵니다.
+        chatMessageContainer.getChildren().clear(); // 이전 대화 내용 삭제
 
-        chatRoomTitle.setText(roomName);
-        chatMessageContainer.getChildren().clear(); // 기존 메시지 제거
+        // 4. (선택사항) REST API로 이 채팅방의 과거 대화 기록을 불러오는 로직을 여기에 추가할 수 있습니다.
 
-        // 예시 메시지
-        addMessage("안녕하세요! 여기는 " + roomName + " 입니다.", false);
+        // 5. 새로운 채팅방의 채널을 구독합니다.
+        StompSession session = WebSocketManager.getInstance().getSession();
+        if (session == null || !session.isConnected()) {
+            System.err.println("웹소켓이 연결되지 않아 채팅방에 참여할 수 없습니다.");
+            return;
+        }
+
+        String destination = "/topic/chat/" + this.currentChatIndex;
+        currentSubscription = session.subscribe(destination, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return ChatMessageResponse.class; // 서버로부터 받을 메시지 DTO
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                ChatMessageResponse chatMessage = (ChatMessageResponse) payload;
+
+                // UI 업데이트는 반드시 Platform.runLater 안에서 처리해야 합니다.
+                Platform.runLater(() -> {
+                    // 내가 보낸 메시지인지 확인
+                    boolean isMine = (chatMessage.getSenderIndex() == currentUserIndex);
+                    // 수신한 메시지를 화면에 추가
+                    addMessage(chatMessage.getContent(), isMine);
+                });
+            }
+        });
+
+        System.out.println("새로운 채팅방(" + this.currentChatIndex + ") 구독을 시작합니다. 주소: " + destination);
     }
 
     public void addMessage(String content, boolean isMine) {
@@ -218,38 +269,6 @@ public class ChatViewController {
 
         messageBox.getChildren().add(bubble);
         chatMessageContainer.getChildren().add(messageBox);
-    }
-
-    private void connectWebSocket() {
-        String token = tokenManager.getInstance().getJwtToken();
-        if (token == null || token.isEmpty()) {
-            System.err.println("JWT 토큰이 없어 WebSocket에 연결할 수 없습니다.");
-            return;
-        }
-
-        String URL = "ws://localhost:8080/ws?token=" + token;
-
-        WebSocketClient client = new StandardWebSocketClient();
-        this.stompClient = new WebSocketStompClient(client);
-        this.stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompHeaders connectHeaders = new StompHeaders();
-        connectHeaders.add("Authorization", "Bearer " + token); // Bearer 접두사 추가
-//
-//        try {
-//            this.stompSession = stompClient.connect(URL, connectHeaders, new StompSessionHandlerAdapter() {
-//                @Override
-//                public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-//                    Platform.runLater(() -> System.out.println("WebSocket 연결 성공. 채팅방을 선택하세요."));
-//                }
-//                @Override
-//                public void handleTransportError(StompSession session, Throwable exception) {
-//                    Platform.runLater(() -> System.err.println("WebSocket 연결 오류: " + exception.getMessage()));
-//                }
-//            }).get(); // .get()을 통해 연결이 완료될 때까지 기다림 (실제 앱에서는 비동기 처리 고려)
-//        } catch (Exception e) {
-//            Platform.runLater(() -> System.err.println("WebSocket 연결 실패: " + e.getMessage()));
-//        }
     }
 
     @FXML
@@ -290,9 +309,6 @@ public class ChatViewController {
     @FXML
     private void ChatListSet(){
 
-        chatObservableList = FXCollections.observableArrayList();
-        chatListView.setItems(chatObservableList);
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiconstants.BASE_URL + "/chat/me"))
                 .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
@@ -306,8 +322,11 @@ public class ChatViewController {
                             String responseBody = response.body(); //응답 받아서 string으로 변환
 
                             // json 객체 리스트를 바로 friend 리스트에 저장
-                            ChatRoomList = objectMapper.readValue(responseBody, new TypeReference<List<ChatRoom>>() {});
-                            chatObservableList.setAll(ChatRoomList);
+                            List<ChatRoom> ChatRoomList = objectMapper.readValue(responseBody, new TypeReference<List<ChatRoom>>() {});
+                            Platform.runLater(() -> {
+                                // 이미 연결된 chatObservableList의 내용물만 교체
+                                chatObservableList.setAll(ChatRoomList);
+                            });
                         } catch (Exception ex) {
                             ex.printStackTrace(); //예외 발생 위치, 호출 경로 출력
                         }
