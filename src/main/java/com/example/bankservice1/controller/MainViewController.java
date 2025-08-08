@@ -1,4 +1,5 @@
 package com.example.bankservice1.controller;
+
 import com.example.bankservice1.constants.apiconstants;
 import com.example.bankservice1.model.*;
 
@@ -6,9 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -27,7 +27,6 @@ import javafx.stage.Stage;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
-import com.example.bankservice1.model.*;
 
 
 import java.io.IOException;
@@ -37,6 +36,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -60,7 +60,8 @@ public class MainViewController implements Initializable{
 
     @FXML private Label unreadCountBadge;
 
-    @FXML private StackPane notificationButtonContainer;
+    @FXML private StackPane rootStackPane;
+
     @FXML private ListView<NotificationSet> notificationListView;
     private final ObservableList<NotificationSet> notificationList = FXCollections.observableArrayList();
 
@@ -68,6 +69,11 @@ public class MainViewController implements Initializable{
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     private final LongProperty unreadCount = new SimpleLongProperty(0);
+
+    private Node notificationPanel;
+    private boolean isNotificationPanelVisible = false;// 로드된 알림창을 저장할 변수
+
+    Stage notificationStage;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -93,72 +99,63 @@ public class MainViewController implements Initializable{
             menu.setVisible(true);
             employeeSearch.setVisible(true);
         }
-
-        /// /////////////////////
-
-        notificationListView.setItems(notificationList);
-        setupNotificationCellFactory();
-
-
-        mainPane.setOnMouseClicked(event -> {
-            if (notificationListView.isVisible()) {
-                notificationListView.setVisible(false);
-                notificationListView.setManaged(false);
-            }
-        });
-
     }
-
     /**
      * 🔔 종 아이콘 컨테이너 클릭 이벤트 핸들러
      */
     @FXML
-    private void handleBellButtonClick(MouseEvent event) { // 파라미터가 MouseEvent
-        if (notificationListView.isVisible()) {
-            notificationListView.setVisible(false);
-            notificationListView.setManaged(false);
-        } else {
-            loadNotifications();
-        }
-        // 이벤트가 상위로 전파되지 않도록 막음 (mainPane의 setOnMouseClicked에 영향 안 주게)
-        event.consume();
-    }
+    public void handleBellButtonClick() {
 
+        if (notificationStage != null && notificationStage.isShowing()) {
+            notificationStage.toFront(); // 이미 열려있으면 맨 앞으로 가져옵니다.
+            return;
+        }
+        try {
+            // 1. FXML을 로드하는 것은 동일합니다.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/NotificationPanel.fxml"));
+            Parent notificationRoot = loader.load();
+
+            // 2. 새 창(Stage)을 만듭니다.
+            notificationStage = new Stage();
+            notificationStage.setTitle("알림 목록");
+            notificationStage.setScene(new Scene(notificationRoot));
+
+            // 3. (선택사항) 창 스타일 및 주인 창 설정
+            // notificationStage.initModality(Modality.WINDOW_MODAL); // 이 창을 닫아야 다른 창을 쓸 수 있음
+            // notificationStage.initOwner(rootStackPane.getScene().getWindow()); // 메인 창을 주인으로 설정
+
+            // 4. 새 창을 보여줍니다.
+            notificationStage.show();
+
+            notificationStage.setOnCloseRequest((event) -> {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(apiconstants.BASE_URL + "/notifications/mark-read"))
+                        .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                        .POST(HttpRequest.BodyPublishers.noBody())
+                        .build();
+
+                httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                        .thenAccept(response -> {
+                            if (response.statusCode() == 200) {
+                                System.err.println("지우기 성공: " + response.statusCode());
+                            } else {
+                                System.err.println("지우기 실패: " + response.statusCode());
+                            }
+                        });
+
+                unreadCount.set(0);
+            });
+
+
+        } catch (IOException e) {
+            System.err.println("알림창을 여는 중 오류 발생!");
+            e.printStackTrace();
+        }
+    }
     /**
      * 서버에서 알림 목록 데이터를 불러오는 메소드
      */
-    private void loadNotifications() {
-        // 실제 알림 목록을 가져오는 API 엔드포인트로 수정해야 합니다.
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiconstants.BASE_URL + "/notifications?userId=" + UserSession.getInstance().getUserIndex()))
-                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
-                .GET()
-                .build();
 
-        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> {
-                    if (response.statusCode() == 200) {
-                        try {
-                            // 서버 응답(JSON)을 Notification 객체 리스트로 변환
-                            // Notification.java 클래스가 model 패키지에 있어야 합니다.
-                            final List<NotificationSet> fetchedNotifications = objectMapper.readValue(response.body(), new TypeReference<List<NotificationSet>>() {});
-
-                            Platform.runLater(() -> {
-                                notificationList.setAll(fetchedNotifications); // 리스트 내용 교체
-                                notificationListView.setVisible(true);      // 리스트 보이기
-                                notificationListView.setManaged(true);
-
-                                // (선택) 목록을 열어봤으니 안 읽은 개수를 0으로 초기화
-                                // unreadCount.set(0);
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        System.out.println("알림 목록 로드 실패: " + response.statusCode());
-                    }
-                });
-    }
 
     /**
      * ListView의 각 셀 모양을 커스텀으로 설정하는 메소드
@@ -183,8 +180,12 @@ public class MainViewController implements Initializable{
                     setGraphic(null);
                 } else {
                     typeLabel.setText(item.getType());
-                    contentLabel.setText(item.getContent());
-                    timestampLabel.setText(item.getTimestamp());
+                    contentLabel.setText(item.getMessage());
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                    String formattedDateTime = item.getCreatedAt().format(formatter);
+
+                    timestampLabel.setText(formattedDateTime);
                     setGraphic(vbox);
                 }
             }
