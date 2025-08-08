@@ -2,6 +2,7 @@ package com.example.bankservice1.controller;
 import com.example.bankservice1.constants.apiconstants;
 import com.example.bankservice1.model.*;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import javafx.application.Platform;
@@ -9,6 +10,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,7 +19,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -31,6 +37,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable{
@@ -53,6 +60,10 @@ public class MainViewController implements Initializable{
 
     @FXML private Label unreadCountBadge;
 
+    @FXML private StackPane notificationButtonContainer;
+    @FXML private ListView<NotificationSet> notificationListView;
+    private final ObservableList<NotificationSet> notificationList = FXCollections.observableArrayList();
+
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -62,12 +73,9 @@ public class MainViewController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
 
         unreadCount.addListener((obs, oldVal, newVal) -> {
-            if (newVal.intValue() > 0) {
-                unreadCountBadge.setText(String.valueOf(newVal)); // 라벨 텍스트 변경
-                unreadCountBadge.setVisible(true);                 // 라벨 보이기
-            } else {
-                unreadCountBadge.setVisible(false);                // 0개면 라벨 숨기기
-            }
+            unreadCountBadge.setText(String.valueOf(newVal)); // 라벨 텍스트 변경
+            unreadCountBadge.setVisible(true);                 // 라벨 보이기
+
         });
 
         // initialize() 메소드가 실행되자마자 공지사항 화면을 로드하는 메소드를 호출합니다.
@@ -86,6 +94,107 @@ public class MainViewController implements Initializable{
             employeeSearch.setVisible(true);
         }
 
+        /// /////////////////////
+
+        notificationListView.setItems(notificationList);
+        setupNotificationCellFactory();
+
+
+        mainPane.setOnMouseClicked(event -> {
+            if (notificationListView.isVisible()) {
+                notificationListView.setVisible(false);
+                notificationListView.setManaged(false);
+            }
+        });
+
+    }
+
+    /**
+     * 🔔 종 아이콘 컨테이너 클릭 이벤트 핸들러
+     */
+    @FXML
+    private void handleBellButtonClick(MouseEvent event) { // 파라미터가 MouseEvent
+        if (notificationListView.isVisible()) {
+            notificationListView.setVisible(false);
+            notificationListView.setManaged(false);
+        } else {
+            loadNotifications();
+        }
+        // 이벤트가 상위로 전파되지 않도록 막음 (mainPane의 setOnMouseClicked에 영향 안 주게)
+        event.consume();
+    }
+
+    /**
+     * 서버에서 알림 목록 데이터를 불러오는 메소드
+     */
+    private void loadNotifications() {
+        // 실제 알림 목록을 가져오는 API 엔드포인트로 수정해야 합니다.
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiconstants.BASE_URL + "/notifications?userId=" + UserSession.getInstance().getUserIndex()))
+                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                .GET()
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                            // 서버 응답(JSON)을 Notification 객체 리스트로 변환
+                            // Notification.java 클래스가 model 패키지에 있어야 합니다.
+                            final List<NotificationSet> fetchedNotifications = objectMapper.readValue(response.body(), new TypeReference<List<NotificationSet>>() {});
+
+                            Platform.runLater(() -> {
+                                notificationList.setAll(fetchedNotifications); // 리스트 내용 교체
+                                notificationListView.setVisible(true);      // 리스트 보이기
+                                notificationListView.setManaged(true);
+
+                                // (선택) 목록을 열어봤으니 안 읽은 개수를 0으로 초기화
+                                // unreadCount.set(0);
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("알림 목록 로드 실패: " + response.statusCode());
+                    }
+                });
+    }
+
+    /**
+     * ListView의 각 셀 모양을 커스텀으로 설정하는 메소드
+     */
+    private void setupNotificationCellFactory() {
+        notificationListView.setCellFactory(param -> new ListCell<NotificationSet>() {
+            private final VBox vbox = new VBox(5);
+            private final Label typeLabel = new Label();
+            private final Label contentLabel = new Label();
+            private final Label timestampLabel = new Label();
+
+            {
+                contentLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+                timestampLabel.setStyle("-fx-text-fill: #888888;");
+                vbox.getChildren().addAll(contentLabel, timestampLabel);
+            }
+
+            @Override
+            protected void updateItem(NotificationSet item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    typeLabel.setText(item.getType());
+                    contentLabel.setText(item.getContent());
+                    timestampLabel.setText(item.getTimestamp());
+                    setGraphic(vbox);
+                }
+            }
+        });
+    }
+
+
+
+    public void setupAfterLogin() {
+        System.out.println("MainViewController: 로그인 후 설정을 시작합니다.");
         loadInitialUnreadCount();
         subscribeToGlobalNotifications();
     }
@@ -191,6 +300,8 @@ public class MainViewController implements Initializable{
         }
     }
 
+
+
     private void subscribeToGlobalNotifications() {
         StompSession session = WebSocketManager.getInstance().getSession();
         if (session == null || !session.isConnected()) {
@@ -204,6 +315,7 @@ public class MainViewController implements Initializable{
             }
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
+                System.out.println(">>>>>>>>>> [SUCCESS] MESSAGE RECEIVED ON /topic/notify! <<<<<<<<<<");
                 Platform.runLater(() -> {
                     System.out.println("🔔 [MainView] 새로운 실시간 알림 수신!");
                     unreadCount.set(unreadCount.get() + 1);
@@ -217,6 +329,7 @@ public class MainViewController implements Initializable{
 
     public void Logout(){
         tokenManager.getInstance().clearSession();
+        UserSession.getInstance().clearLogin();
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/login.fxml"));
             Parent root = loader.load();

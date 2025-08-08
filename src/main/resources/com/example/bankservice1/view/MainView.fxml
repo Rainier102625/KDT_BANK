@@ -9,80 +9,82 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-
-<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
-    <left>
-        <VBox spacing="10.0" style="-fx-background-color: #f8f9fa;" BorderPane.alignment="CENTER">
-            <padding>
-                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-            </padding>
-            <children>
-            <HBox prefHeight="34.0" prefWidth="123.0">
-               <children>
-                  <StackPane prefHeight="9.0" prefWidth="47.0" fx:id="notificationButtonContainer"  style="-fx-cursor: hand;">
+<StackPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.MainViewController">
+    <children>
+        <BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="800.0" >
+            <left>
+                <VBox spacing="10.0" style="-fx-background-color: #f8f9fa;" BorderPane.alignment="CENTER">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
                     <children>
-                        <ImageView fx:id="bellIcon" fitHeight="22" fitWidth="22">
-                            <image>
-                                <Image url="@../../../../icons/bellIcon.png" />
-                            </image>
-                        </ImageView>
-                        <Label fx:id="unreadCountBadge"
-                               style="-fx-background-color: black; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 10px; -fx-padding: 1px 5px;"
-                                StackPane.alignment="TOP_RIGHT" translateX="0" translateY="3"/>
+                    <HBox prefHeight="34.0" prefWidth="123.0">
+                       <children>
+                          <StackPane prefHeight="9.0" prefWidth="47.0" fx:id="notificationButtonContainer" onMouseClicked="handleBellButtonClick"  style="-fx-cursor: hand;">
+                            <children>
+                                <ImageView fx:id="bellIcon" fitHeight="22" fitWidth="22">
+                                    <image>
+                                        <Image url="@../../../../icons/bellIcon.png" />
+                                    </image>
+                                </ImageView>
+                                <Label fx:id="unreadCountBadge"
+                                       style="-fx-background-color: black; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 10px; -fx-padding: 1px 5px;"
+                                        StackPane.alignment="TOP_RIGHT" translateX="6" translateY="2"/>
+                            </children>
+                          </StackPane>
+                       </children>
+                    </HBox>
+                    <VBox prefHeight="112.0" prefWidth="123.0">
+                       <children>
+                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                             <center>
+                                <ImageView fitHeight="74.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                                   <image>
+                                      <Image url="@../../../../icons/profile.png" />
+                                   </image></ImageView>
+                             </center>
+                             <bottom>
+                                <Label fx:id="name" BorderPane.alignment="CENTER" />
+                             </bottom>
+                          </BorderPane>
+                       </children>
+                    </VBox>
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="메뉴" />
+
+                        <Button fx:id="NoticeViewButton" onAction="#showNoticeView" styleClass="transparent-button" text="• 공지사항" />
+                        <Button onAction="#showProductManagement" styleClass="transparent-button" text="• 상품 관리" />
+                        <Button onAction="#showAccountApprovalView" styleClass="transparent-button" text="• 계좌 개설 승인" />
+                        <Button onAction="#showCustomerView" styleClass="transparent-button" text="• 고객 조회" />
+                        <Button onAction="#showMypage" styleClass="transparent-button" text="• 마이페이지" />
+                        <Button fx:id="ChatButton" onAction="#showChatView" styleClass="transparent-button" text="• 채팅" />
+                        <Label fx:id="menu" layoutX="25.0" layoutY="25.0" style="-fx-font-weight: bold; -fx-font-size: 16px;" text="관리자 메뉴">
+
+                            <VBox.margin>
+                                <Insets top="20.0" />
+                            </VBox.margin>
+                        </Label>
+                        <Button fx:id="employeeSearch" onAction="#showEmployeeCheckView" styleClass="transparent-button" text="• 사원 조회" />
+                    <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0">
+                       <children>
+                          <HBox alignment="BOTTOM_CENTER">
+                             <children>
+                                <ImageView fitHeight="20" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                   <image>
+                                      <Image url="@../../../../icons/logout.png" />
+                                   </image>
+                                </ImageView>
+                                <Button fx:id="logoutBtn" mnemonicParsing="false" styleClass="transparent-button" text="로그아웃" />
+                             </children>
+                          </HBox>
+                       </children>
+                    </VBox>
                     </children>
-                  </StackPane>
-
-               </children>
-            </HBox>
-            <VBox prefHeight="112.0" prefWidth="123.0">
-               <children>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <center>
-                        <ImageView fitHeight="74.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                           <image>
-                              <Image url="@../../../../icons/profile.png" />
-                           </image></ImageView>
-                     </center>
-                     <bottom>
-                        <Label fx:id="name" BorderPane.alignment="CENTER" />
-                     </bottom>
-                  </BorderPane>
-               </children>
-            </VBox>
-                <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="메뉴" />
-
-                <Button fx:id="NoticeViewButton" onAction="#showNoticeView" styleClass="transparent-button" text="• 공지사항" />
-                <Button onAction="#showProductManagement" styleClass="transparent-button" text="• 상품 관리" />
-                <Button onAction="#showAccountApprovalView" styleClass="transparent-button" text="• 계좌 개설 승인" />
-                <Button onAction="#showCustomerView" styleClass="transparent-button" text="• 고객 조회" />
-                <Button onAction="#showMypage" styleClass="transparent-button" text="• 마이페이지" />
-                <Button fx:id="ChatButton" onAction="#showChatView" styleClass="transparent-button" text="• 채팅" />
-                <Label fx:id="menu" layoutX="25.0" layoutY="25.0" style="-fx-font-weight: bold; -fx-font-size: 16px;" text="관리자 메뉴">
-
-                    <VBox.margin>
-                        <Insets top="20.0" />
-                    </VBox.margin>
-                </Label>
-                <Button fx:id="employeeSearch" onAction="#showEmployeeCheckView" styleClass="transparent-button" text="• 사원 조회" />
-            <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0">
-               <children>
-                  <HBox alignment="BOTTOM_CENTER">
-                     <children>
-                        <ImageView fitHeight="20" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../icons/logout.png" />
-                           </image>
-                        </ImageView>
-                        <Button fx:id="logoutBtn" mnemonicParsing="false" styleClass="transparent-button" text="로그아웃" />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
-            </children>
-        </VBox>
-    </left>
-    <center>
-        <VBox fx:id="contentArea" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
-        </VBox>
-    </center>
-</BorderPane>
+                </VBox>
+            </left>
+            <center>
+                <VBox fx:id="contentArea" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+                </VBox>
+            </center>
+        </BorderPane>
+    </children>
+</StackPane>
