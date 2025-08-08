@@ -15,6 +15,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
 <BorderPane xmlns="http://javafx.com/javafx/21.0.8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bankservice1.controller.ChatViewController">
 
     <left>
@@ -108,7 +110,13 @@
                             <StackPane fx:id="rightPanelContainer" alignment="TOP_RIGHT">
                                 <VBox fx:id="friendPanel" alignment="TOP_CENTER" managed="false" spacing="10" style="-fx-background-color: #E7EDF7; -fx-padding: 10; -fx-border-color: #CCCCCC; -fx-border-width: 1;" visible="false">
                                     <Label style="-fx-font-weight: bold;" text="참여자 목록" />
-                                    <ListView fx:id="participantListView" prefHeight="150" />
+                                    <TableView fx:id="participantTable" maxWidth="210" prefHeight="177.0" prefWidth="440.0">
+                                        <columns>
+                                            <TableColumn fx:id="userName" maxWidth="70" prefWidth="100.0" text="이름" />
+                                            <TableColumn fx:id="department" maxWidth="70" prefWidth="100.0" text="부서" />
+                                            <TableColumn fx:id="position" maxWidth="70" prefWidth="100.0" text="직급" />
+                                        </columns>
+                                    </TableView>
                                     <Button fx:id="inviteButton" style="-fx-background-color: #2d6ef6; -fx-text-fill: white; -fx-font-weight: bold;" text="친구 초대" />
                                 </VBox>
                                 <Button fx:id="toggleFriendPanelButton" style="-fx-background-color: #f0f0f0; -fx-border-radius: 5; -fx-padding: 5;" text="👥" />
