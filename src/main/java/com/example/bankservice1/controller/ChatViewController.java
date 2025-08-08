@@ -194,8 +194,6 @@ public class ChatViewController {
 
             // ✅ 2. 내가 보낸 메시지를 즉시 내 화면에 표시 (기존 로직)
 //            addMessage(content, true);
-
-            messageInput.clear();
         });
 
         messageInput.setOnAction(e -> {
@@ -218,7 +216,9 @@ public class ChatViewController {
         chatRoomTitle.setText(room.getChatName()); // ChatRoom 객체에서 이름을 가져옵니다.
         chatMessageContainer.getChildren().clear(); // 이전 대화 내용 삭제
 
-        // 4. (선택사항) REST API로 이 채팅방의 과거 대화 기록을 불러오는 로직을 여기에 추가할 수 있습니다.
+        // 4. (선택사항) REST API로 이 채팅방의 과거 대화기록을 불러오는 로직을 여기에 추가할 수 있습니다.
+
+        loadChatHistory(this.currentChatIndex);
 
         // 5. 새로운 채팅방의 채널을 구독합니다.
         StompSession session = WebSocketManager.getInstance().getSession();
@@ -243,7 +243,7 @@ public class ChatViewController {
                     // 내가 보낸 메시지인지 확인
                     boolean isMine = (chatMessage.getSenderIndex() == currentUserIndex);
                     // 수신한 메시지를 화면에 추가
-                    addMessage(chatMessage.getContent(), isMine);
+                    addMessage(chatMessage.getSenderName(),chatMessage.getContent(), isMine);
                 });
             }
         });
@@ -251,24 +251,96 @@ public class ChatViewController {
         System.out.println("새로운 채팅방(" + this.currentChatIndex + ") 구독을 시작합니다. 주소: " + destination);
     }
 
-    public void addMessage(String content, boolean isMine) {
+
+    public void addMessage(String senderName, String content, boolean isMine) {
+        // 1. 전체 메시지 블록을 감싸고 좌/우 정렬을 담당할 HBox 생성
         HBox messageBox = new HBox();
+
+        // 2. 이름과 말풍선을 수직으로 담을 VBox 생성
+        VBox bubbleContainer = new VBox(5); // 이름과 말풍선 사이의 간격 5px
+
+        // bubbleContainer 자체의 정렬을 설정합니다. (이름과 말풍선이 왼쪽/오른쪽 정렬)
+        bubbleContainer.setAlignment(isMine ? Pos.TOP_RIGHT : Pos.TOP_LEFT);
+
+
+        // 3. 내가 보낸 메시지가 아닐 경우에만 이름 Label을 추가
+        if (!isMine) {
+            Label nameLabel = new Label(senderName);
+            nameLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #555; -fx-font-weight: bold;");
+            nameLabel.setPadding(new Insets(0, 0, 0, 5)); // 말풍선과 여백을 맞추기 위함
+            bubbleContainer.getChildren().add(nameLabel); // VBox에 이름 추가
+        }
+
+        // 4. 메시지 내용을 담을 말풍선(bubble) Label 생성
         Label bubble = new Label(content);
         bubble.setWrapText(true);
         bubble.setPadding(new Insets(10));
         bubble.setMaxWidth(300);
         bubble.setStyle("-fx-background-radius: 12; -fx-font-size: 13px;");
 
+        // 5. VBox에 말풍선 추가
+        bubbleContainer.getChildren().add(bubble);
+
+        // 6. 내가 보낸 메시지인지 상대가 보낸 메시지인지에 따라 HBox 정렬 및 스타일 적용
         if (isMine) {
+            // 내가 보낸 메시지: 전체 블록을 오른쪽으로 정렬
             messageBox.setAlignment(Pos.CENTER_RIGHT);
-            bubble.setStyle(bubble.getStyle() + "-fx-background-color: #4f6df5; -fx-text-fill: white;"); //내가 보낸 메세지
+            bubble.setStyle(bubble.getStyle() + "-fx-background-color: #4f6df5; -fx-text-fill: white;");
         } else {
+            // 상대가 보낸 메시지: 전체 블록을 왼쪽으로 정렬
             messageBox.setAlignment(Pos.CENTER_LEFT);
-            bubble.setStyle(bubble.getStyle() + "-fx-background-color: #f0f0f0; -fx-text-fill: black;"); //상대가 보낸 메세지
+            bubble.setStyle(bubble.getStyle() + "-fx-background-color: #f0f0f0; -fx-text-fill: black;");
         }
 
-        messageBox.getChildren().add(bubble);
+        // 7. 완성된 VBox(이름+말풍선)를 HBox에 추가
+        messageBox.getChildren().add(bubbleContainer);
+
+        // 8. 최종 결과물을 채팅 컨테이너에 추가
+        // HBox에 약간의 여백을 주어 위아래 다른 말풍선과 간격을 줍니다.
+        messageBox.setPadding(new Insets(5, 10, 5, 10));
         chatMessageContainer.getChildren().add(messageBox);
+    }
+
+    private void loadChatHistory(long chatRoomId) {
+        // 1. API 요청 객체 생성
+        // 실제 API 엔드포인트로 수정해야 합니다.
+        String apiUrl = apiconstants.BASE_URL + "/messages/" + chatRoomId;
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl))
+                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken()) // 인증 토큰
+                .GET()
+                .build();
+
+        // 2. 비동기 방식으로 API 호출
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                            // 3. 받아온 JSON 데이터를 List<ChatMessage> 객체로 변환
+                            String jsonBody = response.body();
+                            List<ChatMessageResponse> history = objectMapper.readValue(jsonBody, new TypeReference<>() {});
+
+
+                            // 4. UI 업데이트는 반드시 Platform.runLater 안에서 처리!
+                            Platform.runLater(() -> {
+                                // 기존 메시지를 모두 지우고 시작
+                                chatMessageContainer.getChildren().clear();
+
+                                // 받아온 메시지를 하나씩 화면에 추가
+                                for (ChatMessageResponse msg : history) {
+                                    // 내가 보낸 메시지인지 확인 (예시: UserSession 사용)
+                                    boolean isMine = (msg.getSenderIndex() == UserSession.getInstance().getUserIndex());
+                                    // 화면에 말풍선을 추가하는 메서드 호출
+                                    addMessage(msg.getSenderName(), msg.getContent(), isMine);
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        System.err.println("과거 대화 기록 로딩 실패: " + response.statusCode());
+                    }
+                });
     }
 
     @FXML

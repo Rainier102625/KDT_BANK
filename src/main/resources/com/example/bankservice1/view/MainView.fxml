@@ -16,7 +16,9 @@
                     <children>
                     <HBox prefHeight="34.0" prefWidth="123.0">
                        <children>
-                          <StackPane fx:id="notificationButtonContainer" onMouseClicked="handleBellButtonClick" prefHeight="9.0" prefWidth="47.0" style="-fx-cursor: hand;">
+
+                          <StackPane prefHeight="9.0" prefWidth="47.0" fx:id="rootStackPane" onMouseClicked="#handleBellButtonClick"  style="-fx-cursor: hand;">
+
                             <children>
                                 <ImageView fx:id="bellIcon" fitHeight="22" fitWidth="22">
                                     <image>
