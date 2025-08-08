@@ -57,6 +57,7 @@ public class MainViewController implements Initializable{
     @FXML private Label menu;
     @FXML private Button employeeSearch;
     @FXML private  Button logoutBtn;
+    @FXML private Button account;
 
     @FXML private Label unreadCountBadge;
 
@@ -95,9 +96,11 @@ public class MainViewController implements Initializable{
 
         menu.setVisible(false);
         employeeSearch.setVisible(false);
+        account.setVisible(false);
         if(UserSession.getInstance().getAdmin()) {
             menu.setVisible(true);
             employeeSearch.setVisible(true);
+            account.setVisible(true);
         }
     }
     /**
