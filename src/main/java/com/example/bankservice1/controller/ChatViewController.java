@@ -55,6 +55,7 @@ public class ChatViewController {
     @FXML private Button createGroupbtn;
     @FXML private Button inviteButton;
     @FXML private Button addUserButton;
+    @FXML private Button deleteBtn;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -95,6 +96,8 @@ public class ChatViewController {
         userName.setCellValueFactory(new PropertyValueFactory<>("userName"));
         department.setCellValueFactory(new PropertyValueFactory<>("department"));
         position.setCellValueFactory(new PropertyValueFactory<>("position"));
+
+        deleteBtn.setOnAction(event -> handledelete()); //채팅방 나가기
 
         chatListView.setItems(chatObservableList);
 
@@ -208,6 +211,31 @@ public class ChatViewController {
         messageInput.setOnAction(e -> {
             sendButton.fire();
         });
+    }
+    private void handledelete() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiconstants.BASE_URL + "/chat/member/"+this.currentChatIndex +"/" + UserSession.getInstance().getUserIndex()))
+                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                .DELETE()
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if(response.statusCode() == 200) {
+                        System.out.println("success");
+                        Platform.runLater(() -> {
+                            ChatListSet();
+                            chatmain.setVisible(true);
+                            chatWindow.setVisible(false);
+                        });
+                    }else{
+                        System.out.println("fail");
+                    }
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return null;
+                });
     }
 
     private void handleChatMember(TableView<ChatMember> participantTable) {
