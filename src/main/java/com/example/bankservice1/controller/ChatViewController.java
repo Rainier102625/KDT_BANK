@@ -110,7 +110,6 @@ public class ChatViewController {
             chatList.setManaged(true);
         });
         createGroupbtn.setOnAction(e -> {
-
         try {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/createchat.fxml"));
@@ -204,6 +203,7 @@ public class ChatViewController {
     public void openChatRoom(ChatRoom room) {
         if (currentSubscription != null) {
             currentSubscription.unsubscribe();
+            leaveChat(room);
             System.out.println("이전 채팅방(" + currentChatIndex + ") 구독을 해지합니다.");
         }
 
@@ -222,6 +222,7 @@ public class ChatViewController {
 
         // 5. 새로운 채팅방의 채널을 구독합니다.
         StompSession session = WebSocketManager.getInstance().getSession();
+        enterChat(room);
         if (session == null || !session.isConnected()) {
             System.err.println("웹소켓이 연결되지 않아 채팅방에 참여할 수 없습니다.");
             return;
@@ -380,7 +381,6 @@ public class ChatViewController {
 
     @FXML
     private void ChatListSet(){
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiconstants.BASE_URL + "/chat/me"))
                 .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
@@ -404,6 +404,48 @@ public class ChatViewController {
                         }
                     } else{
                         System.out.println("서버 오류" + response.statusCode());
+                    }
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return null;
+                });
+    }
+
+    public void enterChat(ChatRoom chatRoom){
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiconstants.BASE_URL + "/chat/"+chatRoom.getChatIndex()+"/enter"))
+                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if(response.statusCode()==200) {
+                        System.out.println("입장 성공" + response.statusCode());
+                    } else{
+                        System.out.println("입장 오류" + response.statusCode());
+                    }
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return null;
+                });
+    }
+
+    public void leaveChat(ChatRoom chatRoom){
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiconstants.BASE_URL + "/chat/"+chatRoom.getChatIndex()+"/leave"))
+                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if(response.statusCode()==200) {
+                        System.out.println("퇴장 성공" + response.statusCode());
+                    } else{
+                        System.out.println("퇴장 오류" + response.statusCode());
                     }
                 })
                 .exceptionally(ex -> {
