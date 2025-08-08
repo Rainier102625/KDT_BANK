@@ -7,10 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -116,10 +113,12 @@ public class AccountapprovalController {
                     if (response.statusCode() == 200) {
                         System.out.println("success");
                         Platform.runLater(() -> this.handleSearchAccount());
+                        Platform.runLater(() -> showAlert("완료"));
                     }else {
                         System.out.println("fail");
                         System.out.println(response.statusCode());
                         System.out.println(requestIndex);
+                        Platform.runLater(() -> showAlert("실패"));
                     }
                 })
                 .exceptionally(ex -> {
@@ -167,6 +166,13 @@ public class AccountapprovalController {
 
         card.getChildren().addAll(imageView, customerBox, accountBox, statusBox, buttonBox);
         requestListContainer.getChildren().add(card);
+    }
+    private void showAlert(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("알림");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 
 }
