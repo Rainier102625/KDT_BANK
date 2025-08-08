@@ -128,8 +128,10 @@ public class friendaddController {
                         System.out.println("응답 바디: " + response.body());
                         if(response.statusCode()==200) {
                             System.out.println("success");
+                            Platform.runLater(() -> showAlert("친구 추가 성공"));
                         } else {
                             System.out.println("fail");
+                            Platform.runLater(() -> showAlert("친구 추가 실패"));
                         }
                     })
                     .exceptionally(ex -> {
@@ -140,5 +142,12 @@ public class friendaddController {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+    private void showAlert(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("알림");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }
