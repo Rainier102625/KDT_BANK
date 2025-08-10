@@ -6,6 +6,9 @@ import com.example.bankservice1.model.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -24,11 +27,13 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 
 
+import javafx.scene.image.ImageView;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -47,7 +52,6 @@ public class MainViewController implements Initializable{
 
     @FXML
     private Button NoticeViewButton;
-
     @FXML
     private VBox contentArea;
 
@@ -70,6 +74,8 @@ public class MainViewController implements Initializable{
 
     @FXML private Stage notificationStage;
 
+    @FXML private ImageView bellIcon;
+
     private StompSession.Subscription globalNotificationSubscription;
 
     @FXML private ListView<NotificationSet> notificationListView;
@@ -86,7 +92,6 @@ public class MainViewController implements Initializable{
         });
 
         // initialize() 메소드가 실행되자마자 공지사항 화면을 로드하는 메소드를 호출합니다.
-
         showNoticeView();
 
         String userName = UserSession.getInstance().getUserName();
@@ -314,6 +319,9 @@ public class MainViewController implements Initializable{
                 Platform.runLater(() -> {
                     System.out.println("🔔 [MainView] 새로운 실시간 알림 수신!");
                     unreadCount.set(unreadCount.get() + 1);
+                    Platform.runLater(()->{
+                        BellImageAnime(bellIcon);
+                    });
                 });
             }
         });
@@ -369,7 +377,7 @@ public class MainViewController implements Initializable{
 
                                 unreadCount.set(initialCount);
 
-                                System.out.println("📞 최초 안 읽은 알림 개수(" + initialCount + "개)를 로드했습니다.");
+                                System.out.println("최초 안 읽은 알림 개수(" + initialCount + "개)를 로드했습니다.");
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -384,6 +392,35 @@ public class MainViewController implements Initializable{
                         }
                     });
                 });
+    }
+
+
+    private void BellImageAnime(ImageView imageView){
+        double oneWayDuration = 0.5; // 편도 0.5초
+        double cycleDuration = oneWayDuration * 2; // 왕복 1.0초
+
+        // 2. 총 실행 시간을 정합니다.
+        double totalDuration = 4; // 총 10초
+
+        // 3. 총 실행 시간에 필요한 반복 횟수를 계산합니다.
+        int cycleCount = (int) (totalDuration / cycleDuration);
+
+        // 타임라인 생성
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(0), new KeyValue(imageView.opacityProperty(), 1.0)),
+                new KeyFrame(Duration.seconds(oneWayDuration), new KeyValue(imageView.opacityProperty(), 0.0))
+        );
+
+        // 4. 무한 반복 대신 계산된 횟수를 설정합니다.
+        timeline.setCycleCount(cycleCount);
+        timeline.setAutoReverse(true);
+
+        timeline.setOnFinished(event -> {
+            // 이미지의 투명도를 원래 상태(1.0, 완전 불투명)로 복구합니다.
+            imageView.setOpacity(1.0);
+        });
+
+        timeline.play();
     }
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);

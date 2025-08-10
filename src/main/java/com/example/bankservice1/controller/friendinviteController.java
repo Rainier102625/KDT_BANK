@@ -20,8 +20,6 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.bankservice1.controller.friendaddController;
-
 public class friendinviteController {
     @FXML private TableView<Friend> friendTable;
     @FXML private TableColumn<Friend,String> userName;
@@ -35,8 +33,13 @@ public class friendinviteController {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     private Long currentChatIndex;
+
+    private ChatViewController chatViewController;
+
+    public void setChatViewController(ChatViewController chatViewController){
+        this.chatViewController = chatViewController;
+    }
 
     @FXML
     public void initialize() {
@@ -53,7 +56,7 @@ public class friendinviteController {
         friendTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         chatmemberadd.setOnAction(event -> {
-            handleAddSelectionFriend(currentChatIndex);
+            handleAddSelectionFriend();
         });
     }
     public void initData(List<Friend> friends) {
@@ -69,7 +72,7 @@ public class friendinviteController {
     }
 
     @FXML
-    private void handleAddSelectionFriend(Long currentChatIndex){
+    private void handleAddSelectionFriend(){
         ObservableList<Friend> friendObservableList = friendTable.getSelectionModel().getSelectedItems();
 
         if (friendObservableList.isEmpty()) {
@@ -83,7 +86,7 @@ public class friendinviteController {
             indexList.add(friend.getUserIndex());
         }
 
-        ChatMemberAdd chatMemberAdd = new ChatMemberAdd(currentChatIndex,indexList);
+        ChatMemberAdd chatMemberAdd = new ChatMemberAdd(this.currentChatIndex,indexList);
         try {
             String requestBody = objectMapper.writeValueAsString(chatMemberAdd);
 

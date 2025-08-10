@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.stage.Stage;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -32,6 +33,8 @@ public class NoticeDetailController{
 
     @FXML private MenuButton noticeMenuBox;
 
+    @FXML private Button saveButton;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -45,9 +48,14 @@ public class NoticeDetailController{
     }
 
     public NoticeDetailController(){}
+    private NoticeViewController noticeViewController;
+    public void setNoticeViewController(NoticeViewController noticeViewController) {
+        this.noticeViewController = noticeViewController;
+    }
 
 
     // Notice 객체를 받아와 UI에 데이터를 설정하는 메소드
+    @FXML
     public void setNotice(Notice notice) {
         titleTextField.setText(notice.getNoticeTitle());
         dateLabel.setText("날짜 "+notice.getCreatedAt());
@@ -62,7 +70,7 @@ public class NoticeDetailController{
             contentTextArea.setEditable(true);
         }
     }
-
+    @FXML
     public void setMenuButton(Notice notice){
 
         noticeMenuBox.setVisible(false);
@@ -113,6 +121,15 @@ public class NoticeDetailController{
                                 if (response.statusCode() == 200) {
                                     System.out.println("생성 성공");
                                     showAlert("생성 완료");
+
+                                    if (noticeViewController != null) {
+                                        noticeViewController.loadAllNoticesFromServer();
+                                    }
+
+                                    // 현재 창 닫기
+                                    Stage stage = (Stage) saveButton.getScene().getWindow(); // saveButton은 FXML의 저장 버튼 fx:id
+                                    stage.close();
+
                                 } else if (response.statusCode() == 400) {
                                     System.out.println("생성 실패");
                                     showAlert(Alert.AlertType.ERROR, "실패", "사용자가 아닙니다.");
@@ -127,7 +144,7 @@ public class NoticeDetailController{
             }
         }
     }
-
+    @FXML
     private void handleModify(Notice notice) {
         if(UserSession.getInstance().getAdmin()) {
             try {
@@ -157,6 +174,14 @@ public class NoticeDetailController{
                                     showAlert("수정 완료");
                                     notice.setNoticeTitle(modifiedTitle);
                                     notice.setNoticeContent(modifiedContent);
+
+                                    if (noticeViewController != null) {
+                                        noticeViewController.loadAllNoticesFromServer();
+                                    }
+
+                                    Stage stage = (Stage) noticeMenuBox.getScene().getWindow();
+                                    stage.close();
+
                                 } else if (response.statusCode() == 400) {
                                     System.out.println("수정 실패");
                                     showAlert(Alert.AlertType.ERROR, "실패", "사용자가 아닙니다.");
@@ -171,7 +196,7 @@ public class NoticeDetailController{
             }
         }
     }
-
+    @FXML
     private void handleDelete(Notice notice){
         if(UserSession.getInstance().getAdmin()) {
             try {
@@ -192,6 +217,12 @@ public class NoticeDetailController{
                                     System.out.println("삭제 성공");
                                     showAlert("삭제 완료");
 
+                                    if (noticeViewController != null) {
+                                        noticeViewController.loadAllNoticesFromServer();
+                                    }
+
+                                    Stage stage = (Stage) noticeMenuBox.getScene().getWindow();
+                                    stage.close();
 
                                 } else if (response.statusCode() == 400) {
                                     System.out.println("삭제 실패");

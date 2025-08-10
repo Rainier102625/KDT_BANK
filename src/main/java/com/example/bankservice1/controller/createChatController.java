@@ -34,10 +34,14 @@ public class createChatController {
 
     private List<Friend> friendsList = new ArrayList<>();
 
-    private ObservableList<Friend> friendObservableListList;
+    private ObservableList<Friend> friendObservableListList = FXCollections.observableArrayList();;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
+    private ChatViewController chatViewController;
+    public void setChatViewController(ChatViewController chatViewController) {
+        this.chatViewController = chatViewController;
+    }
 
     @FXML
     public void initialize(){
@@ -46,7 +50,6 @@ public class createChatController {
         department.setCellValueFactory(new PropertyValueFactory<>("department"));
         position.setCellValueFactory(new PropertyValueFactory<>("position"));
 
-        friendObservableListList = FXCollections.observableArrayList();
         friendTable.setItems(friendObservableListList);
 
         friendTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); //friendlist 다중 선택 가능하게 설정
@@ -107,6 +110,9 @@ public class createChatController {
                                 String responseBody = response.body();
                                 System.out.println("채팅방 생성 성공: " + responseBody);
                                 showAlert(Alert.AlertType.INFORMATION, "성공", "채팅방 생성에 성공했습니다.");
+
+                                chatViewController.ChatListSet();
+
                                 // 여기서 화면 전환 로직 호출
                                 handleCloseButtonClick(event);
                             } else if (response.statusCode() == 400) {

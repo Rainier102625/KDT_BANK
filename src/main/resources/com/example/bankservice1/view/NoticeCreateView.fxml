@@ -21,7 +21,7 @@
                                 <TextField fx:id="titleTextField" prefHeight="21.0" prefWidth="297.0" />
                             </children>
                         </VBox>
-                  <Button mnemonicParsing="false" onAction="#handleCreate" prefHeight="21.0" prefWidth="55.0" text="생성" />
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleCreate" prefHeight="21.0" prefWidth="55.0" text="생성" />
                     </children>
                 </HBox>
             </children>
