@@ -61,7 +61,7 @@ public class ChatViewController {
     //친구 리스트
     @FXML private ListView<Friend> friendListView;
     private ObservableList<Friend> friendObservableList;
-    private List<Friend> friendsListset = new ArrayList<>();
+    private List<Friend> friendsListSet = new ArrayList<>();
 
     // 채팅방 리스트
     @FXML private ListView<ChatRoom> chatListView;
@@ -74,6 +74,7 @@ public class ChatViewController {
     private WebSocketStompClient stompClient;
     private StompSession stompSession;
     private StompSession.Subscription currentSubscription; // 현재 구독 정보를 저장하기 위함
+
     private Long currentChatIndex; // 현재 접속한 채팅방의 인덱스
     private Long currentUserIndex = UserSession.getInstance().getUserIndex();
 
@@ -107,34 +108,34 @@ public class ChatViewController {
             chatList.setManaged(true);
         });
         createGroupbtn.setOnAction(e -> {
-        try {
+            try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/createchat.fxml"));
-            Parent root = loader.load();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/createchat.fxml"));
+                Parent root = loader.load();
 
-            createChatController controller = loader.getController();
+                createChatController controller = loader.getController();
 
-            controller.initData(this.friendsListset);
+                controller.initData(this.friendsListSet);
 
-            Stage stage = new Stage();
-            stage.setTitle("채팅방 만들기");
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.show();
+                Stage stage = new Stage();
+                stage.setTitle("채팅방 만들기");
+                stage.setScene(new Scene(root));
+                stage.setResizable(false);
+                stage.show();
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
         inviteButton.setOnAction(e -> {
-
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friendinvite.fxml"));
                 Parent root = loader.load();
 
                 friendinviteController controller = loader.getController();
 
-                controller.initData(this.friendsListset);
+                controller.initData(this.friendsListSet);
+                controller.loadChatIndex(this.currentChatIndex);
 
                 Stage stage = new Stage();
                 stage.setTitle("친구 초대");
@@ -192,6 +193,10 @@ public class ChatViewController {
 
             // ✅ 2. 내가 보낸 메시지를 즉시 내 화면에 표시 (기존 로직)
 //            addMessage(content, true);
+
+            Platform.runLater(() -> {
+                chatScrollPane.setVvalue(1.0);
+            });
 
         });
 
@@ -300,15 +305,10 @@ public class ChatViewController {
         // HBox에 약간의 여백을 주어 위아래 다른 말풍선과 간격을 줍니다.
         messageBox.setPadding(new Insets(5, 10, 5, 10));
         chatMessageContainer.getChildren().add(messageBox);
-
-        Platform.runLater(() -> {
-            chatScrollPane.setVvalue(1.0);
-        });
     }
 
     private void loadChatHistory(long chatRoomId) {
         // 1. API 요청 객체 생성
-        // 실제 API 엔드포인트로 수정해야 합니다.
         String apiUrl = apiconstants.BASE_URL + "/messages/" + chatRoomId;
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl))
@@ -367,8 +367,8 @@ public class ChatViewController {
                     String responseBody = response.body(); //응답 받아서 string으로 변환
 
                     // json 객체 리스트를 바로 friend 리스트에 저장
-                    friendsListset = objectMapper.readValue(responseBody, new TypeReference<List<Friend>>() {});
-                    friendObservableList.setAll(friendsListset);
+                    friendsListSet = objectMapper.readValue(responseBody, new TypeReference<List<Friend>>() {});
+                    friendObservableList.setAll(friendsListSet);
 
                 } catch (Exception ex) {
                     ex.printStackTrace(); //예외 발생 위치, 호출 경로 출력

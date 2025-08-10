@@ -4,15 +4,15 @@ import java.util.List;
 
 public class ChatMemberAdd {
 
-    private int ChatRoomIndex;
+    private long ChatRoomIndex;
     private List<Integer> member;
 
 
-    public int getChatRoomIndex() {
+    public long getChatRoomIndex() {
         return ChatRoomIndex;
     }
 
-    public void setChatRoomIndex(int chatRoomIndex) {
+    public void setChatRoomIndex(long chatRoomIndex) {
         ChatRoomIndex = chatRoomIndex;
     }
 
@@ -24,7 +24,7 @@ public class ChatMemberAdd {
         this.member = member;
     }
 
-    public ChatMemberAdd(int ChatRoomIndex, List<Integer> member) {
+    public ChatMemberAdd(long ChatRoomIndex, List<Integer> member) {
         this.ChatRoomIndex = ChatRoomIndex;
         this.member = member;
     }

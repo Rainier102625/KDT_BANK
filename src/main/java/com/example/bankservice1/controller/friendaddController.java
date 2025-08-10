@@ -31,6 +31,8 @@ public class friendaddController {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
+    public friendaddController() {}
+
     @FXML
     public void initialize(){
         userName.setCellValueFactory(new PropertyValueFactory<>("userName"));
