@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -54,9 +55,15 @@ public class ChatViewController {
     @FXML private Button createGroupbtn;
     @FXML private Button inviteButton;
     @FXML private Button addUserButton;
+    @FXML private Button deleteBtn;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
+
+    @FXML private TableView<ChatMember>participantTable;
+    @FXML private TableColumn<ChatMember,String> userName;
+    @FXML private TableColumn<ChatMember,String> department;
+    @FXML private TableColumn<ChatMember,String> position;
 
     //친구 리스트
     @FXML private ListView<Friend> friendListView;
@@ -84,6 +91,12 @@ public class ChatViewController {
 
     @FXML
     public void initialize() {
+        userName.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        department.setCellValueFactory(new PropertyValueFactory<>("department"));
+        position.setCellValueFactory(new PropertyValueFactory<>("position"));
+
+        deleteBtn.setOnAction(event -> handledelete()); //채팅방 나가기
+
         chatListView.setItems(chatObservableList);
 
         FriendListSet();
@@ -204,6 +217,63 @@ public class ChatViewController {
             sendButton.fire();
         });
     }
+    private void handledelete() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiconstants.BASE_URL + "/chat/member/"+this.currentChatIndex +"/" + UserSession.getInstance().getUserIndex()))
+                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                .DELETE()
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if(response.statusCode() == 200) {
+                        System.out.println("success");
+                        Platform.runLater(() -> {
+                            ChatListSet();
+                            chatmain.setVisible(true);
+                            chatWindow.setVisible(false);
+                        });
+                    }else{
+                        System.out.println("fail");
+                    }
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return null;
+                });
+    }
+
+    private void handleChatMember(TableView<ChatMember> participantTable) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiconstants.BASE_URL + "/chat/member/"+this.currentChatIndex))
+                .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())
+                .GET()
+                .build();
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if(response.statusCode() == 200) {
+                        try {
+                            String responseBody = response.body();
+                            ChatMember[] chatmemberArray = objectMapper.readValue(responseBody, ChatMember[].class);
+                            List<ChatMember> chatMemberList = Arrays.asList(chatmemberArray);
+                            Platform.runLater(() -> {
+                                participantTable.setItems(FXCollections.observableList(chatMemberList));
+                            });
+                            System.out.println(responseBody);
+                        } catch (Exception ex) {
+                            ex.printStackTrace(); //예외 발생 위치, 호출 경로 출력
+                        }
+                    }else {
+                        System.out.println("멤버 불러오기 실패" + response.statusCode());
+                        System.out.println(response.body());
+                        System.out.println("챗 인덱스"+this.currentUserIndex);
+                    }
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return null;
+                });
+    }
 
     public void openChatRoom(ChatRoom room) {
         if (currentSubscription != null) {
@@ -254,6 +324,7 @@ public class ChatViewController {
             }
         });
 
+        handleChatMember(participantTable);
         System.out.println("새로운 채팅방(" + this.currentChatIndex + ") 구독을 시작합니다. 주소: " + destination);
     }
 
