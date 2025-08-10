@@ -2,7 +2,7 @@ package com.example.bankservice1.model;
 
 import java.time.LocalDateTime;
 
-public class Notice {
+public class Notice implements Comparable<Notice>{
 
     // 필드는 이전과 동일
     // 1. 프로퍼티 필드 선언
@@ -51,4 +51,13 @@ public class Notice {
         return getNoticeIndex() + getNoticeTitle() + getCreatedAt();
     }
 
+    @Override
+    public int compareTo(Notice o) {
+        if (o.noticeIndex < noticeIndex){
+            return 1;
+        }else if(o.noticeIndex > noticeIndex){
+            return -1;
+        }
+        return 0;
+    }
 }

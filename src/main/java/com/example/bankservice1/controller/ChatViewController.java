@@ -129,6 +129,7 @@ public class ChatViewController {
                 createChatController controller = loader.getController();
 
                 controller.initData(this.friendsListSet);
+                controller.setChatViewController(this);
 
                 Stage stage = new Stage();
                 stage.setTitle("채팅방 만들기");
@@ -146,9 +147,10 @@ public class ChatViewController {
                 Parent root = loader.load();
 
                 friendinviteController controller = loader.getController();
-
+                controller.initialize();
                 controller.initData(this.friendsListSet);
                 controller.loadChatIndex(this.currentChatIndex);
+                controller.setChatViewController(this);
 
                 Stage stage = new Stage();
                 stage.setTitle("친구 초대");
@@ -161,10 +163,14 @@ public class ChatViewController {
             }
         });
         addUserButton.setOnAction(e -> {
-
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/bankservice1/view/friendadd.fxml"));
                 Parent root = loader.load();
+
+                friendaddController controller = loader.getController();
+
+                controller.initialize();
+                controller.setChatViewController(this);
 
                 Stage stage = new Stage();
                 stage.setTitle("친구 초대");
@@ -203,18 +209,13 @@ public class ChatViewController {
             WebSocketManager.getInstance().getSession().send("/app/chat.sendMessage", payload);
 
             messageInput.clear();
-
-            // ✅ 2. 내가 보낸 메시지를 즉시 내 화면에 표시 (기존 로직)
-//            addMessage(content, true);
-
-            Platform.runLater(() -> {
-                chatScrollPane.setVvalue(1.0);
-            });
-
         });
-
         messageInput.setOnAction(e -> {
             sendButton.fire();
+        });
+        // 채팅 후 가장 최신 채팅으로 최신화
+        chatMessageContainer.heightProperty().addListener((obs, oldHeight, newHeight) -> {
+            chatScrollPane.setVvalue(1.0);
         });
     }
     private void handledelete() {
@@ -320,6 +321,8 @@ public class ChatViewController {
                     boolean isMine = (chatMessage.getSenderIndex() == currentUserIndex);
                     // 수신한 메시지를 화면에 추가
                     addMessage(chatMessage.getSenderName(),chatMessage.getContent(), isMine);
+
+
                 });
             }
         });
@@ -418,9 +421,7 @@ public class ChatViewController {
                     }
                 });
     }
-
-    @FXML
-    private void FriendListSet(){
+    public void FriendListSet(){
 
         friendObservableList = FXCollections.observableArrayList();
         friendListView.setItems(friendObservableList);
@@ -436,11 +437,10 @@ public class ChatViewController {
             if(response.statusCode()==200) {
                 try{
                     String responseBody = response.body(); //응답 받아서 string으로 변환
-
-                    // json 객체 리스트를 바로 friend 리스트에 저장
                     friendsListSet = objectMapper.readValue(responseBody, new TypeReference<List<Friend>>() {});
-                    friendObservableList.setAll(friendsListSet);
-
+                    Platform.runLater(()->{
+                        friendObservableList.setAll(friendsListSet);
+                    });
                 } catch (Exception ex) {
                     ex.printStackTrace(); //예외 발생 위치, 호출 경로 출력
                 }
@@ -454,8 +454,7 @@ public class ChatViewController {
             });
     }
 
-    @FXML
-    private void ChatListSet(){
+    public void ChatListSet(){
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiconstants.BASE_URL + "/chat/me"))
                 .header("Authorization", "Bearer " + tokenManager.getInstance().getJwtToken())

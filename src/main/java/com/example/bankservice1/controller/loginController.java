@@ -92,13 +92,12 @@ public class loginController {
                                 UserSession.getInstance().setAdmin(admin);
                                 UserSession.getInstance().setUserIndex(userIndex);
                                 System.out.println("로그인 성공: " + responseBody);
-                                showAlert(Alert.AlertType.INFORMATION, "성공", "로그인에 성공했습니다.");
 
-                                System.out.println("📡 웹소켓 연결을 시작합니다...");
+                                System.out.println("웹소켓 연결을 시작합니다...");
 
                                 WebSocketManager.getInstance().connect(() -> {
                                     // 3. 웹소켓 연결 성공 후 실행될 코드
-                                    System.out.println("🚀 웹소켓 준비 완료. 알림 구독 및 화면 전환을 시작합니다.");
+                                    System.out.println("웹소켓 준비 완료. 알림 구독 및 화면 전환을 시작합니다.");
                                     Platform.runLater(() -> {
                                         // ✅ MainView를 로드하고 컨트롤러를 받아옵니다.
                                         MainViewController mainController = loadMainViewAndGetController();
@@ -107,13 +106,8 @@ public class loginController {
                                             mainController.setupAfterLogin();
                                         }
                                     });
-                                    // 알림 채널 구독
-
                                 });
-
                                 showAlert(Alert.AlertType.INFORMATION, "성공", "로그인에 성공했습니다.");
-                                // 여기서 화면 전환 로직 호출
-
                             }
                             else if (response.statusCode() == 400) {
                                 System.out.println("로그인 실패");
@@ -130,14 +124,6 @@ public class loginController {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "오류", "로그인 요청 중 오류가 발생했습니다.");
         }
-    }
-
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     private MainViewController loadMainViewAndGetController() {
@@ -160,15 +146,6 @@ public class loginController {
             return null;
         }
     }
-
-    private void showAlert(String msg) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("알림");
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.showAndWait();
-    }
-
     @FXML
     protected void handleSignUpButtonAction(ActionEvent event) {
         System.out.println("회원가입 화면으로 이동합니다.");
@@ -195,5 +172,13 @@ public class loginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
