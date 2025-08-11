@@ -80,10 +80,10 @@ public class friendinviteController {
             return;
         }
 
-        List<Integer> indexList = new ArrayList<>();
+        List<Long> indexList = new ArrayList<>();
 
         for(Friend friend : friendObservableList){
-            indexList.add(friend.getUserIndex());
+            indexList.add((long) friend.getUserIndex());
         }
 
         ChatMemberAdd chatMemberAdd = new ChatMemberAdd(this.currentChatIndex,indexList);
