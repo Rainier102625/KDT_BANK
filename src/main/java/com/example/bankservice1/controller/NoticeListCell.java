@@ -9,28 +9,35 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 public class NoticeListCell extends ListCell<Notice> {
-    private static final int CELL_HEIGHT = 60;
 
-    private BorderPane pane = new BorderPane();
-    private HBox leftBox = new HBox(10);
-    private Label indexLabel = new Label();
-    private Label titleLabel = new Label();
-    private Label dateLabel = new Label();
+    private final BorderPane pane;
+    private final Label titleLabel;
+    private final Label dateLabel;
 
     public NoticeListCell() {
-        // 셀 스타일
-        setPrefHeight(CELL_HEIGHT);
+        // 1. UI 컴포넌트 생성 및 구조 설정은 생성자에서 한 번만 합니다.
+        titleLabel = new Label();
+        dateLabel = new Label();
 
-        setPadding(new Insets(0, 25, 0, 25));
-
-        setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);");
-
-        setAlignment(Pos.CENTER_LEFT);
-
+        // 제목을 담을 왼쪽 영역
+        HBox leftBox = new HBox(titleLabel);
         leftBox.setAlignment(Pos.CENTER_LEFT);
-        pane.setCenter(leftBox);
-        pane.setRight(dateLabel);
+        leftBox.setPadding(new Insets(10, 15, 10, 15)); // 안쪽 여백
 
+        // 날짜를 담을 오른쪽 영역
+        HBox rightBox = new HBox(dateLabel);
+        rightBox.setAlignment(Pos.CENTER_RIGHT);
+        rightBox.setPadding(new Insets(10, 15, 10, 15)); // 안쪽 여백
+
+        // 전체 레이아웃을 담당할 BorderPane
+        pane = new BorderPane();
+        pane.setLeft(leftBox);
+        pane.setRight(rightBox);
+
+        // 셀 배경 스타일 (그림자 효과 등)
+        setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);");
+        // 셀 사이의 간격을 위해 바깥 여백 설정
+        setPadding(new Insets(5, 10, 5, 10));
     }
 
     @Override
@@ -38,20 +45,14 @@ public class NoticeListCell extends ListCell<Notice> {
         super.updateItem(notice, empty);
 
         if (empty || notice == null) {
-            setGraphic(null);
-            setStyle("");
+            setGraphic(null); // 빈 셀은 아무것도 표시하지 않음
         } else {
-            // 제목과 날짜 설정
-            if(!leftBox.getChildren().contains(titleLabel)) {
-                leftBox.getChildren().add(titleLabel);
-            }
-            indexLabel.setText(Integer.toString(notice.getNoticeIndex()));
+            // 제목 getter
             titleLabel.setText(notice.getNoticeTitle());
-            dateLabel.setText(notice.getNoticeContent());
+            // 시간 getter
+            dateLabel.setText(notice.getCreatedAt());
 
-            setGraphic(pane);
-
-            setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);");
+            setGraphic(pane); // 완성된 그래픽을 셀에 적용
         }
     }
 }

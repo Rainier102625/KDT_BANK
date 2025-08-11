@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -28,8 +29,16 @@ public class friendaddController {
     @FXML private Button search;
     @FXML private TextField searchText;
 
+
+
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
+    private ChatViewController chatViewController;
+
+    public void setChatViewController(ChatViewController chatViewController) {
+        this.chatViewController = chatViewController;
+    }
+    public friendaddController() {}
 
     @FXML
     public void initialize(){
@@ -41,7 +50,7 @@ public class friendaddController {
         search.setOnAction(event -> handleSearch(friendTable));
 
         state.setCellFactory(column -> new TableCell<>() {
-            private final Button moreButton = new Button("⋮");
+            @FXML private final Button moreButton = new Button("⋮");;
             {
                 moreButton.setStyle("-fx-background-color: white; -fx-font-size: 12px; -fx-text-fill: black;");
 
@@ -128,7 +137,13 @@ public class friendaddController {
                         System.out.println("응답 바디: " + response.body());
                         if(response.statusCode()==200) {
                             System.out.println("success");
-                            Platform.runLater(() -> showAlert("친구 추가 성공"));
+                            Platform.runLater(() -> {
+                                showAlert("친구 추가 성공");
+
+                                if (chatViewController != null) {
+                                    chatViewController.FriendListSet();
+                                }
+                            });
                         } else {
                             System.out.println("fail");
                             Platform.runLater(() -> showAlert("친구 추가 실패"));

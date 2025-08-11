@@ -118,7 +118,7 @@
                                         </columns>
                                     </TableView>
                                     <Button fx:id="inviteButton" style="-fx-background-color: #2d6ef6; -fx-text-fill: white; -fx-font-weight: bold;" text="친구 초대" />
-                                    <Button fx:id="deleteBtn" style="-fx-background-color: #2d6ef6; -fx-text-fill: white; -fx-font-weight: bold;" text="친구 초대" />
+                                    <Button fx:id="deleteBtn" style="-fx-background-color: #2d6ef6; -fx-text-fill: white; -fx-font-weight: bold;" text="채팅방 나가기" />
                                 </VBox>
                                 <Button fx:id="toggleFriendPanelButton" style="-fx-background-color: #f0f0f0; -fx-border-radius: 5; -fx-padding: 5;" text="👥" />
                             </StackPane>
